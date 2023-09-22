@@ -7,3 +7,5 @@ assets
 assets/**
 public
 public/**
+content/post/.obsidian
+content/post/.obsidian/**

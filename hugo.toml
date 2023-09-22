@@ -1,4 +1,4 @@
 baseURL = 'https://etogaosion.github.io/'
 languageCode = 'zh-cn'
-title = 'Blue Space Blog'
+title = 'BlueSpace Blog'
 theme = 'arknights'
