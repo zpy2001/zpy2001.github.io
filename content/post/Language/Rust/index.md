@@ -2,7 +2,7 @@
 title: Rust - 笔记
 description: "Notes about Rust"
 slug: Rust
-date: 2023-09-22 00:00:00+0000
+date: 2023-07-01 00:00:00+0000
 categories:
     - Rust
 tags:

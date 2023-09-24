@@ -2,7 +2,7 @@
 title: 并行程序设计导论 - 笔记
 description: "Notes about Parallel Programming Design"
 slug: Parallel-Computing
-date: 2023-09-22 00:00:00+0000
+date: 2022-06-24 00:00:00+0000
 categories:
     - Parallel Computing
 tags:

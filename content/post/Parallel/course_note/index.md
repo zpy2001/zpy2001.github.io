@@ -2,7 +2,7 @@
 title: 并行 - 课程笔记
 description: "Course notes about Parallel Computing"
 slug: Parallel-Computing
-date: 2023-09-22 00:00:00+0000
+date: 2023-06-24 00:00:00+0000
 categories:
     - Parallel Computing
 tags:

@@ -2,7 +2,7 @@
 title: 编译原理 - 课程笔记
 description: Course notes about Compiler
 slug: compiler-course
-date: 2023-09-22 00:00:00+0000
+date: 2022-06-20 00:00:00+0000
 categories:
     - Compiler
 tags:

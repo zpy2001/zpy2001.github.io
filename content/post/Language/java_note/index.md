@@ -2,7 +2,7 @@
 title: Java - 笔记
 description: "Notes about Java"
 slug: Java
-date: 2023-09-22 00:00:00+0000
+date: 2021-08-09 00:00:00+0000
 categories:
     - Java
 tags:

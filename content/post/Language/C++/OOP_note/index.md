@@ -2,7 +2,7 @@
 title: C++ OOP - 笔记
 description: "Notes about C++ OOP"
 slug: C-plus-plus-OOP
-date: 2023-09-22 00:00:00+0000
+date: 2022-04-21 00:00:00+0000
 categories:
     - C++
 tags:

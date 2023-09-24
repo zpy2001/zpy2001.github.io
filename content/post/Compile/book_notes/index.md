@@ -2,7 +2,7 @@
 title: 编译原理 - 龙书
 description: Book notes about Compiler - Dragon Book
 slug: compiler-book
-date: 2023-09-22 00:00:00+0000
+date: 2022-06-20 00:00:00+0000
 categories:
     - Compiler
 tags:

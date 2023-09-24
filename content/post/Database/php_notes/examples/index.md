@@ -2,7 +2,7 @@
 title: PHP - 语法样例
 description: Examples about PHP
 slug: database-php-examples
-date: 2023-09-22 00:00:00+0000
+date: 2022-07-05 00:00:00+0000
 categories:
     - Database
 tags:

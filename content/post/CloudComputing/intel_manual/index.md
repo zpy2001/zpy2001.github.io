@@ -2,7 +2,7 @@
 title: 云计算 - Intel手册笔记
 description: Cloud Computing - Intel Manual Notes
 slug: cloud-computing-intel
-date: 2023-09-23 00:00:00+0000
+date: 2022-02-22 00:00:00+0000
 categories:
     - Cloud Computing
 tags:
