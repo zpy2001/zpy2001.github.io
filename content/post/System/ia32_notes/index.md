@@ -2,7 +2,7 @@
 title: IA32 - 笔记
 description: "Notes about IA32"
 slug: IA32
-date: 2022-01-01 00:00:00+0000
+date: 2023-09-27 00:00:00+0000
 categories:
     - OS
 tags:
