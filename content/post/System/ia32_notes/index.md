@@ -95,4 +95,98 @@ IDT中描述符可以是中断门、陷阱门或任务门，处理器从int/boun
 ### 系统寄存器
 
 - EFLAGS寄存器：
-	- 系统标志和IOPL域控制任务和模式的切换
+	- 系统标志和IOPL域控制任务和模式的切换、中断处理、指令跟踪和访问权限
+- 控制寄存器
+- 调试寄存器
+- (G/L/I)DTR寄存器包含表的线性地址和限长
+- 任务寄存器包含当前任务TSS的线性地址和大小
+- 模型相关寄存器
+
+### 运行模式
+
+- 保护模式
+- 实模式
+- 系统管理态(SMM)
+- 虚拟8086模式
+
+上电后位于实模式，由控制寄存器CR0中的PE标志决定
+
+### EFLAGS
+
+![EFLAGS](photos/eflags.png)
+
+### 内存管理寄存器
+
+![mmreg](photos/mmreg.png)
+
+限长以字节为单位
+
+`lgdt`与`sgdt`分别装载和保存GDTR寄存器
+
+### 控制寄存器
+
+- CR0: 包含系统控制标志
+- CR2: 包含页故障线性地址
+- CR3: 页目录基地址寄存器(PDBR)，包含页目录表的物理基址和两个标志(PCD和PWT)
+- CR4: 包含一组标志，控制扩展启用
+
+![CR](photos/CR.png)
+
+CR0:
+
+- PG (page): CR0[31]，分页
+- CD (cache disable): CR0[30]，为1 disable cache
+- NW (no-direct write): CR0[29]，写操作写回/写穿透
+- AM (align mask): CR0[18]，对齐屏蔽
+- WP (write protection): CR0[16]，管理程序能否写用户级的只读页；fork时COW依赖
+- NE (number error)：CR0[5]，浮点错误
+- PE (protection enable): CR0[0]，启用保护模式，启用段级保护
+
+CR3:
+
+- PCD (page cache disable): CR3[4]，禁用页级高速缓存
+- PWD (page write transparent): CR3[3]，控制页目录表的写回/写穿透
+
+CR4:
+
+- VME
+- PVI (protection-mode virtual interrupt)
+- TSD (timestamp disable): RDTSC指令
+- DE (debug extension)
+- PSE (page size extension): 4K->4M
+- PAE (physical address extension): 32->36位物理寻址
+- MCE (machine check enable)
+- PGE (page global enable)
+- PCE (performance counter enable)
+
+CR4的位能够通过CPUID指令获取
+
+## 保护模式内存管理
+
+分段隔离每个进程，分段功能不可关闭
+
+只有逻辑地址（远指针）确定字节在特定段中的位置
+
+逻辑地址：段选择子+偏移
+
+![seg_page](photos/seg_page.png)
+
+保护模式，物理地址空间4GB：0~0xffffffff
+
+![address_translation](photos/address_translation.ong)
+
+逻辑地址中段选择子在段寄存器中，一个程序内所有访存共享；用户只提供偏移
+
+![segment_selector](photos/segment_selector.png)
+
+索引[3:15]：选择GDT或LDT中8192个描述符中的某个，处理器将索引值*8 + GDT/LDT base
+
+GDT第一项无效，为空段选择子，装载至段寄存器时无异常，但用来访存时产生异常，但装载CS或SS产生一般保护异常(#GP)
+
+### 段寄存器
+
+- CS: 代码
+- DS, ES, FS, GS: 数据
+- SS: 堆栈
+
+段寄存器有可见、不可见部分，段选择子可见，不可见称为描述符高速缓存/影子寄存器
