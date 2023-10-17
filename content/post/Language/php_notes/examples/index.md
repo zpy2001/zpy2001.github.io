@@ -4,9 +4,10 @@ description: Examples about PHP
 slug: database-php-examples
 date: 2022-07-05 00:00:00+0000
 categories:
-    - Database
+    - Language
 tags:
     - Database
+    - Language
     - PHP
     - CS
 weight: 1

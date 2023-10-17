@@ -4,9 +4,10 @@ description: Notes about Mysql
 slug: database-mysql
 date: 2022-07-05 00:00:00+0000
 categories:
-    - Database
+    - Language
 tags:
     - Database
+    - Language
     - Mysql
     - CS
 weight: 1
