@@ -1,7 +1,7 @@
 ---
 title: C# - 笔记
 description: "Notes about C#"
-slug: C#
+slug: C-sharp
 date: 2023-10-14 00:00:00+0000
 categories:
     - C#
