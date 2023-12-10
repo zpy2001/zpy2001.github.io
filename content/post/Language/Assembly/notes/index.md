@@ -1,7 +1,7 @@
 ---
-title: 汇编语言 - 课程笔记
-description: "Course Notes about Assembly Language"
-slug: Assembly-Course-Notes
+title: 汇编语言 - 笔记
+description: "Notes about Assembly Language"
+slug: assembly-notes
 date: 2021-06-30 00:00:00+0000
 categories:
     - Assembly Language

@@ -1,7 +1,7 @@
 ---
 title: 踩坑日记
 description: "Bug Diary"
-slug: Bug-Diary
+url: BugDiary
 date: 2023-10-24 00:00:00+0000
 categories:
     - Bug

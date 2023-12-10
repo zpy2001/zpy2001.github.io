@@ -1,7 +1,7 @@
 ---
 title: Java - 笔记
 description: "Notes about Java"
-slug: Java
+slug: language-java
 date: 2021-08-09 00:00:00+0000
 categories:
     - Java

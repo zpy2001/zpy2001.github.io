@@ -1,7 +1,7 @@
 ---
 title: C++ OOP - 笔记
 description: "Notes about C++ OOP"
-slug: C-plus-plus-OOP
+slug: language-c-plus-plus-OOP
 date: 2022-04-21 00:00:00+0000
 categories:
     - C++

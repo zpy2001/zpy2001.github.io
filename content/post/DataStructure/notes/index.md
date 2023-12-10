@@ -1,7 +1,7 @@
 ---
 title: 数据结构 - 笔记
 description: Notes about Data Structure
-slug: data-structure
+url: data-structure-notes
 date: 2022-07-19 00:00:00+0000
 categories:
     - Data Structure

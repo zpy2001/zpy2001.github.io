@@ -1,7 +1,7 @@
 ---
 title: 分布式系统概念与设计 - 笔记 [TODO]
 description: "Notes about Distributed System: Concept and Design"
-slug: distributed-system-concept-design
+slug: distributed-DSCD
 date: 2023-10-07 00:00:00+0000
 categories:
     - Distributed System

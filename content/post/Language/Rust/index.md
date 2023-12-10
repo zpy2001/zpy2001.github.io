@@ -1,7 +1,7 @@
 ---
 title: Rust - 笔记
 description: "Notes about Rust"
-slug: Rust
+slug: language-rust
 date: 2023-07-01 00:00:00+0000
 categories:
     - Rust
