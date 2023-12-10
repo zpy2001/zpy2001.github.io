@@ -119,7 +119,7 @@ gdt:
 为系统能够随时响应用户激励：初始化设备环境，激活进程0
 
 1. 初始化根设备、硬盘
-2. 规划物理内存格局，设置主存区、缓冲区和虚拟盘，缓冲区为$\prac{1}{3}$总内存大小，之后为虚拟盘区，之后为主内存区
+2. 规划物理内存格局，设置主存区、缓冲区和虚拟盘，缓冲区为$\frac{1}{3}$总内存大小，之后为虚拟盘区，之后为主内存区
 3. 内存管理结构`mem_map`初始化（位于内存低端内核数据区，通过`mem_init`函数），对1MB以上的内存分页进行管理，记录一个页面的使用次数，先将所有内存页面计数设置为`USED`(100)，再将主内存中所有页面计数清零，后续只将计数为0的页面视为空闲
 4. 异常处理中断服务程序挂接IDT（`trap_init`）
 5. 初始化块设备请求项(`blk_dev_init`)
@@ -156,7 +156,7 @@ __asm__ ("movw %%dx,%%ax\n\t" \
 	_set_gate(&idt[n],15,0,addr)
 ```
 
-![IDT](./photos/IDT.png)
+![IDT](photos/IDT.png)
 
 ### 初始化进程0
 
@@ -172,7 +172,7 @@ __asm__ ("movw %%dx,%%ax\n\t" \
 
 fork执行过程：
 
-![fork](./photo/fork_process.png)
+![fork](photos/fork_process.png)
 
 `_sys_fork`是汇编实现的，`int 0x80`软中断使`ss, esp, eflags, cs, eip`寄存器按顺序压入进程0内核栈
 
@@ -252,6 +252,8 @@ ROOT_DEV = 0x0101;
     - `iget`从`inode_table[32]`(控制同时打开不同文件的最大数)，申请空闲节点位置
 2. 挂接inode map, block map
 3. 将当前进程`pwd/root`指针指向根节点
+
+![inode](photos/get_inode.png)
 
 ## 进程2(Shell)
 
