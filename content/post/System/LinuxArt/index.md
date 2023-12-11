@@ -1,7 +1,7 @@
 ---
 title: Linux内核设计的艺术 - 笔记
 description: "Notes about the art of Linux kernel design"
-slug: system-IA32-notes-linux-art
+slug: system-linux-art
 date: 2023-10-10 00:00:00+0000
 categories:
     - Linux
