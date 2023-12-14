@@ -6,7 +6,7 @@ slug: "main"
 menu:
     main:
         name: Home
-        weight: 1
+        weight: 6
         params:
             icon: home
 ---

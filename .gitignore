@@ -7,8 +7,9 @@ assets
 assets/**
 public
 public/**
-content/post/.obsidian
-content/post/.obsidian/**
-content/post/.idea
+**.obsidian
+**.obsidian/**
+**.idea
+**.idea/**
 .idea
 Writerside
