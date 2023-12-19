@@ -277,7 +277,7 @@ IA-32中还有2个：AF/PF(parity，奇偶)
 
 有两类指令只设置条件码不改变其他寄存器：
 
-<center><img src="photos/COM_TEST.bmp" style="width:60%;"></img></center>
+<center><img src="photos/com_test.bmp" style="width:60%;"></img></center>
 
 `CMP`指令类似`SUB`，`TEST`指令类似`AND`，但前者都不改变目标寄存器的值。而是通过结果改变条件码。
 

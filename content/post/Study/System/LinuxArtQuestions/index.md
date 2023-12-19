@@ -122,19 +122,82 @@ Answer: 保护模式开启：`setup.s`中使用
 7. 在`setup`程序里曾经设置过`GDT`，为什么在`head`程序中将其废弃，又重新设置了一个？为什么设置两次，而不是一次搞好？
 {{% /hint %}}
 
-`head`中在设计缓冲区时`setup`设置的`GDT`将被覆盖。因为要在`setup`中开启保护模式，因此只能使用`jmpi`跨段跳转，需要提前设置好`GDT`，但此时`GDT`只是为了`setup`能够正确执行
+Answer: `head`中在设计缓冲区时`setup`设置的`GDT`将被覆盖。
+
+因为要在`setup`中开启保护模式，只能使用`jmpi`跨段跳转，所有需要提前设置好`GDT`，但此时`GDT`只是为了`setup`能够正确执行，所以只包含其代码段数据段的项是合理的。因为`setup`全局仅使用一次，因此Linux在此建立再废除、重新设置的方式是很合适的，能够充分利用内存资源。
+
+后续`head`直接执行内核本身代码，防止`setup`设置的GDT干扰，两次GDT设置是必须的，位置移动是由于编码上由于`setup`模块单读编译，不便在`head`中复用`setup`中的标志，因此在`head`中重新使用标签设置GDT更加方便。
 
 {{% hint degree="warning" title="问题" %}}
-8. 内核的线性地址空间是如何分页的？画出从`0x000000`开始的7个页（包括页目录表、页表所在页）的挂接关系图，就是页目录表的前四个页目录项、第一个个页表的前7个页表项指向什么位置？给出代码证据。
+8. 内核的线性地址空间是如何分页的？画出从`0x000000`开始的7个页（包括页目录表、页表所在页）的挂接关系图，就是页目录表的前四个页目录项、第一个页表的前7个页表项指向什么位置？给出代码证据。
 {{% /hint %}}
+
+页目录表和页表放在物理地址起始位置，从最高地址空间(Linux 0.11保护模式下最大寻址地址`0xffffff`)，按照线性递减的方式设置页表项分配内核页面，方便内核能够直接以虚地址访问物理地址。
+
+图省略，代码：
+
+```C
+.org 0x1000
+pg0:
+
+.org 0x2000
+pg1:
+
+.org 0x3000
+pg2:
+
+.org 0x4000
+pg3:
+
+.align 2
+setup_paging:
+	movl $1024*5,%ecx		/* 5 pages - pg_dir+4 page tables */
+	xorl %eax,%eax
+	xorl %edi,%edi			/* pg_dir is at 0x000 */
+	cld;rep;stosl
+	movl $pg0+7,_pg_dir		/* set present bit/user r/w */
+	movl $pg1+7,_pg_dir+4		/*  --------- " " --------- */
+	movl $pg2+7,_pg_dir+8		/*  --------- " " --------- */
+	movl $pg3+7,_pg_dir+12		/*  --------- " " --------- */
+	movl $pg3+4092,%edi
+	movl $0xfff007,%eax		/*  16Mb - 4096 + 7 (r/w user,p) */
+	std
+1:	stosl			/* fill pages backwards - more efficient :-) */
+	subl $0x1000,%eax
+	jge 1b
+	xorl %eax,%eax		/* pg_dir is at 0x0000 */
+	movl %eax,%cr3		/* cr3 - page directory start */
+	movl %cr0,%eax
+	orl $0x80000000,%eax
+	movl %eax,%cr0		/* set paging (PG) bit */
+	ret			/* this also flushes prefetch-queue */
+```
+
+`cld;rep;stosl`向高地址移动，将`%eax`值存储到`%edi`起始的内存位置，存储长度为`%ecx`，即清除内存起始的5页
+
+使用四个页表地址设置页目录表前四项，从`16MB`(Linux注释误导人)页面设置页表中对应项
+
+最后设置`cr3`为`0x0`
 
 {{% hint degree="warning" title="问题" %}}
 9. 根据内核分页为线性地址恒等映射的要求，推导出四个页表的映射公式，写出页表的设置代码。
 {{% /hint %}}
 
+Linux 0.11保护模式最高支持16MB内存，分在4个页表里，共4K页，因此以[23:22]位索引页表、以[21:12]位索引页表项，以[11:0]表示页偏移找到具体的页。
+
+公式：
+
+$$physical\ addr = page\_directory\_entry\_table[virtual\ addr[23:22]][virtual\ addr[21:12]] + virtual\ addr[11:0]$$
+
+代码见上题
+
 {{% hint degree="warning" title="问题" %}}
 10. 为什么不用`call`，而是用`ret`“调用”`main`函数？画出调用路线图，给出代码证据。
 {{% /hint %}}
+
+`call`说明会返回原函数执行流，但Linux此时并不需要返回，`head`只进行初始化处理，操作系统是作为持续执行的程序、除非强制下电不会退出，操作系统的主循环为调度函数、处理系统调用，且是永续循环，并没有涉及退出操作，即`noreturn main`
+
+因此通过模拟退栈使用`ret`去无返回地“调用”`main`是合理的
 
 ## 第三次作业
   
@@ -142,21 +205,105 @@ Answer: 保护模式开启：`setup.s`中使用
 1、计算内核代码段、数据段的段基址、段限长、特权级。
 {{% /hint %}}
 
+GDT第二项：`0x00c09a0000000fff`，根据[段描述符结构]({{< ref "/post/Study/System/IA32Notes/index.md#段描述符" >}})，[43:41]为`101`，即代码段，段基址0，段限长0xfff，特权级为[46:45]，即0
+
+GDT第三项：`0x00c0920000000fff`，[43:41]为`001`，为数据段，数据同上
+
 {{% hint degree="warning" title="问题" %}}
 2、计算进程0的代码段、数据段的段基址、段限长、特权级。
 {{% /hint %}}
+
+answer: 进程0 LDT位于`INIT_TASK`结构体:
+
+```C
+    { \
+		    {0,0}, \
+/* ldt */	{0x9f,0xc0fa00}, \
+		    {0x9f,0xc0f200}, \
+	}
+```
+
+在GDT中设置LDT/TSS代码：
+
+```C
+#define _set_tssldt_desc(n,addr,type) \
+__asm__ ("movw $104,%1\n\t" \
+	"movw %%ax,%2\n\t" \
+	"rorl $16,%%eax\n\t" \
+	"movb %%al,%3\n\t" \
+	"movb $" type ",%4\n\t" \
+	"movb $0x00,%5\n\t" \
+	"movb %%ah,%6\n\t" \
+	"rorl $16,%%eax" \
+	::"a" (addr), "m" (*(n)), "m" (*(n+2)), "m" (*(n+4)), \
+	 "m" (*(n+5)), "m" (*(n+6)), "m" (*(n+7)) \
+	)
+
+#define set_tss_desc(n,addr) _set_tssldt_desc(((char *) (n)),addr,"0x89")
+#define set_ldt_desc(n,addr) _set_tssldt_desc(((char *) (n)),addr,"0x82")
+```
+
+运行中debug信息：
+
+```sh
+(gdb) p/x gdt[5]
+$4 = {a = 0xa4300068, b = 0x8201}
+```
+
+可以印证GDT中所有项都是0特权级，表明只有内核能够访问GDT中的表项，利用GDT表项设置`LDTR`，而LDT中[46:45]位均为`0x11`即3特权级。
+
+- 进程0代码段段基址0，段限长`0x9f`，特权级3
+- 进程0数据段段基址0，段限长`0x9f`，特权级3
 
 {{% hint degree="warning" title="问题" %}}
 3、`fork`进程1之前，为什么先调用`move_to_user_mode()`？用的是什么方法？解释其中的道理。
 {{% /hint %}}
 
+answer: 进程0和进程1怠速情况下都应该在用户态运行，与其他进程进行同样的调度，以支持系统以怠速状态运行。目前并没有引入内核进程/线程的概念，通过从用户态按照系统调用的方式调用`fork`操作也是更合理的操作。
+
+```C
+#define move_to_user_mode() \
+__asm__ ("movl %%esp,%%eax\n\t" \
+	"pushl $0x17\n\t" \
+	"pushl %%eax\n\t" \
+	"pushfl\n\t" \
+	"pushl $0x0f\n\t" \
+	"pushl $1f\n\t" \
+	"iret\n" \
+	"1:\tmovl $0x17,%%eax\n\t" \
+	"movw %%ax,%%ds\n\t" \
+	"movw %%ax,%%es\n\t" \
+	"movw %%ax,%%fs\n\t" \
+	"movw %%ax,%%gs" \
+	:::"ax")
+```
+
+通过伪造中断上下文使用`iret`的方式硬件改变特权级，经过阅读x86 Manual，`iret`pop stack的顺序是`eip, cs , eflags`，因此在执行完`iret`后执行`1`标签后的代码，`cs`为`0x0f`，即`RPL`为3，则`iret`之后以3特权级执行代码，切换到用户态。
+
 {{% hint degree="warning" title="问题" %}}
-4、根据什么判定`move_to_user_mode()`中`iret`之后的代码为进程0的代码。
+4、根据什么判定`fork`之后的代码为进程0的代码。
 {{% /hint %}}
+
+answer: 根据x86 ABI，使用`%eax`存储返回值，进程0 TSS中的设置为`p->tss.eax = 0;`，而父进程直接返回`return last_pid;`，`_sys_fork`会先调用`_find_empty_process`，将`last_pid`增加，因此父进程返回值一定为正，会与进程0区分开。
 
 {{% hint degree="warning" title="问题" %}}
 5、进程0的`task_struct`在哪？具体内容是什么？给出代码证据。
 {{% /hint %}}
+
+answer: 通过`sched_init`设置了进程0的TSS，具体内容：
+
+```C
+static union task_union init_task = {INIT_TASK,};
+#define INIT_TASK \
+    ... \
+/*tss*/
+    {0,PAGE_SIZE+(long)&init_task,0x10,0,0,0,0,(long)&pg_dir,\
+	 0,0,0,0,0,0,0,0, \
+	 0,0,0x17,0x17,0x17,0x17,0x17,0x17, \
+	 _LDT(0),0x80000000, \
+		{} \
+	}
+```
 
 {{% hint degree="warning" title="问题" %}}
 6、在`system.h`里  
@@ -186,9 +333,39 @@ __asm__ ("movw %%dx,%%ax\n\t" \
 读懂代码。这里中断门、陷阱门、系统调用都是通过`set_gate`设置的，用的是同一个嵌入汇编代码，比较明显的差别是dpl一个是3，另外两个是0，这是为什么？说明理由。
 {{% /hint %}}
 
+防止用户手动调用中断门、陷阱门，应该由硬件直接调用执行，而用户是必须能够访问系统调用的。
+
 {{% hint degree="warning" title="问题" %}}
 7、分析`get_free_page()`函数的代码，叙述在主内存中获取一个空闲页的技术路线。
 {{% /hint %}}
+
+使用内联汇编实现：
+
+```C
+unsigned long get_free_page(void)
+{
+register unsigned long __res asm("ax");
+
+__asm__("std ; repne ; scasb\n\t"
+	"jne 1f\n\t"
+	"movb $1,1(%%edi)\n\t"
+	"sall $12,%%ecx\n\t"
+	"addl %2,%%ecx\n\t"
+	"movl %%ecx,%%edx\n\t"
+	"movl $1024,%%ecx\n\t"
+	"leal 4092(%%edx),%%edi\n\t"
+	"rep ; stosl\n\t"
+	"movl %%edx,%%eax\n"
+	"1:"
+	:"=a" (__res)
+	:"0" (0),"i" (LOW_MEM),"c" (PAGING_PAGES),
+	"D" (mem_map+PAGING_PAGES-1)
+	:"di","cx","dx");
+return __res;
+}
+```
+
+字符串比较：`std ; repne ; scasb`中`std`设置方向标志`DF`为1，使得指令向低地址方向移动，`repne`重复执行之后指令直到`CX`为0或标志`ZF`为0，`scasb`扫描字节，比较`AL`和`ES:[DI]`指向的内存位置的值，并且根据`std`减小`DI`。根据内联汇编参数传入，`%`
 
 {{% hint degree="warning" title="问题" %}}
 8、`copy_process`函数的参数最后五项是：`long eip, long cs, long eflags, long esp, long ss`。查看栈结构确实有这五个参数，奇怪的是其他参数的压栈代码都能找得到，确找不到这五个参数的压栈代码，反汇编代码中也查不到，请解释原因。详细论证其他所有参数是如何传入的。
