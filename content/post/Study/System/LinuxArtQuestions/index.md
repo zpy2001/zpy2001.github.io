@@ -333,15 +333,17 @@ __asm__ ("movw %%dx,%%ax\n\t" \
 读懂代码。这里中断门、陷阱门、系统调用都是通过`set_gate`设置的，用的是同一个嵌入汇编代码，比较明显的差别是dpl一个是3，另外两个是0，这是为什么？说明理由。
 {{% /hint %}}
 
-防止用户手动调用中断门、陷阱门，应该由硬件直接调用执行，而用户是必须能够访问系统调用的。
+answer: 防止用户手动调用中断门、陷阱门，应该由硬件直接调用执行，而用户是必须能够访问系统调用的。
 
 {{% hint degree="warning" title="问题" %}}
 7、分析`get_free_page()`函数的代码，叙述在主内存中获取一个空闲页的技术路线。
 {{% /hint %}}
 
-使用内联汇编实现：
+answer: 使用内联汇编实现：
 
 ```C
+static unsigned char mem_map [ PAGING_PAGES ] = {0,};
+
 unsigned long get_free_page(void)
 {
 register unsigned long __res asm("ax");
@@ -365,19 +367,111 @@ return __res;
 }
 ```
 
-字符串比较：`std ; repne ; scasb`中`std`设置方向标志`DF`为1，使得指令向低地址方向移动，`repne`重复执行之后指令直到`CX`为0或标志`ZF`为0，`scasb`扫描字节，比较`AL`和`ES:[DI]`指向的内存位置的值，并且根据`std`减小`DI`。根据内联汇编参数传入，`%`
+结合二进制dump的结果：
+
+```dump
+unsigned long get_free_page(void)
+{
+    a3e3:	57                   	push   %edi
+    a3e4:	53                   	push   %ebx
+	"rep ; stosl\n\t"
+	" movl %%edx,%%eax\n"
+	"1: cld"
+	:"=a" (__res)
+	:"0" (0),"i" (LOW_MEM),"c" (PAGING_PAGES),
+	"D" (mem_map+PAGING_PAGES-1)
+    a3e5:	bb df 05 02 00       	mov    $0x205df,%ebx
+__asm__("std ; repne ; scasb\n\t"
+    a3ea:	b8 00 00 00 00       	mov    $0x0,%eax
+    a3ef:	ba 00 0f 00 00       	mov    $0xf00,%edx
+    a3f4:	89 d1                	mov    %edx,%ecx
+    a3f6:	89 df                	mov    %ebx,%edi
+    a3f8:	fd                   	std
+    a3f9:	f2 ae                	repnz scas %es:(%edi),%al
+    a3fb:	75 1e                	jne    a41b <get_free_page+0x38>
+    a3fd:	c6 47 01 01          	movb   $0x1,0x1(%edi)
+    a401:	c1 e1 0c             	shl    $0xc,%ecx
+    a404:	81 c1 00 00 10 00    	add    $0x100000,%ecx
+    a40a:	89 ca                	mov    %ecx,%edx
+    a40c:	b9 00 04 00 00       	mov    $0x400,%ecx
+    a411:	8d ba fc 0f 00 00    	lea    0xffc(%edx),%edi
+    a417:	f3 ab                	rep stos %eax,%es:(%edi)
+    a419:	89 d0                	mov    %edx,%eax
+    a41b:	fc                   	cld
+	);
+return __res;
+}
+    a41c:	5b                   	pop    %ebx
+    a41d:	5f                   	pop    %edi
+    a41e:	c3                   	ret
+```
+
+总体而言，Linux在`mem_map`处设置了一个bit map，用来指示内存页的空闲情况，通过检查是否存在为0的项来找到待分配的页面， 而后清空页面，将分配页面的起始地址返回，若所有页都被占用则返回0，汇编代码等价于：
+
+```C
+unsigned long get_free_page(void)
+{
+    unsigned long res = 0;
+    for (int i = mem_map + PAGING_PAGES - 1; i >= mem_map; i++) {
+        for (int j = 7; j >= 0; j--) {
+            if (!(mem_map[i] & (0x1 << j))) {
+                res = LOW_MEM + i << 12;
+                memset(res, 0, 4092);
+                return res;
+            }
+        }
+    }
+    return res;
+}
+```
+
+是否存在为0项：`std ; repne ; scasb`中`std`设置方向标志`DF`为1，使得指令向低地址方向移动，`repne`重复执行之后指令直到`CX`为0或标志`ZF`为0，`scasb`扫描字节，比较`AL`和`ES:[DI]`指向的内存位置的值，并且根据`std`减小`DI`。根据内联汇编参数传入，`%ecx`为`#define PAGING_PAGES (PAGING_MEMORY >> 12)`即`0xf00`，`%edi`为`mem_map+PAGING_PAGES-1`即`0x205df`，`al`为0。总结：从空闲内存最高位置`%edi`寻址第一个为0的空闲地址
+
+`rep`使用`%ecx`标识循环次数，`stosl`将`%eax`存储到`%es:edi%`位置，并将`%edi`自增4
 
 {{% hint degree="warning" title="问题" %}}
 8、`copy_process`函数的参数最后五项是：`long eip, long cs, long eflags, long esp, long ss`。查看栈结构确实有这五个参数，奇怪的是其他参数的压栈代码都能找得到，确找不到这五个参数的压栈代码，反汇编代码中也查不到，请解释原因。详细论证其他所有参数是如何传入的。
 {{% /hint %}}
 
+answer: 通过反汇编查看`copy_process`函数中使用这些参数的代码可得：
+
+- `eip`: `0x70(%esp)`
+- `cs`: `0x74(%esp)`
+- `eflags`: `0x78(%esp)`
+- `esp`: `0x7c(%esp)`
+- `ss`: `0x80(%esp)`
+
+> 系统调用内联汇编：
+> 
+> ```C
+> __asm__ volatile ("int $0x80"
+> 	: "=a" (__res)
+> 	: "0" (__NR_##name));
+> ```
+>
+> 只有输入操作数能够使用数字作为constrain，表示和第index个输出操作数使用同一寄存器，因此这里输出结果和输入系统调用号都使用`%eax`传递，满足x86调用约定。
+
+根据x86手册，异常处理流程的栈安排如下：
+
+![interrupt_stack](./photos/interrupt_stack.png)
+
+由图可见，硬件已经在陷入时帮助将必要参数压栈，而且顺序正好是五个参数对应的顺序。需要注意的是`iret`时必须仍然保持这个栈，以便正确返回用户态执行。
+
 {{% hint degree="warning" title="问题" %}}
 9、详细分析Linux操作系统如何设置保护模式的中断机制。
 {{% /hint %}}
 
+answer: 首先在`head.S`中设置IDT，使用`lidt idt_descr`将256项idt数组位置等信息加载到`idtr`；
+
+在`trap_init`设置IDT表项，即中断、系统陷入门，使得x86硬件能够正确识别并跳转对应的处理函数；
+
+在各个处理函数正确处理栈，完成处理逻辑后使用`iret`返回。
+
 {{% hint degree="warning" title="问题" %}}
 10、分析Linux操作系统如何剥夺用户进程访问内核及其他进程的能力。
 {{% /hint %}}
+
+answer: 通过分段和分页、特权级机制，特权级使得用户不可设置分段、分页相关的关键硬件，从而保障内核设置的运行机制不被破坏，分段、分页机制与特权级协同，通过权限检查使得用户只能够访问允许访问的代码段、数据段、栈段，不同段的读写执行权限限制了使用方式，每个进程的相关页面只在每个进程的页表中，由硬件支持的寻址使得每个进程只能访问分配给自己的页。
 
 {{% hint degree="warning" title="问题" %}}
 11、
@@ -389,6 +483,8 @@ _system_call:
 
 分析后面两行代码的意义。
 {{% /hint %}}
+
+answer: 检查传入的系统调用号是否超出了支持的系统调用数量，若超出了跳转报错
 
 ## 第四次作业
 

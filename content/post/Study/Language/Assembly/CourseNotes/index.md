@@ -59,8 +59,8 @@ single|s|4|float
 double|l|8|double
 extended|t|10/12/16|long double
 
-数组：连续的相同时数据类型的数的排列
-多维数组：行优先排列，A[i]含C个元素，每个元素K bytes，于是A[i]起始地址$A+i\times(C\times K)$，访存形式(offset,index,bytes)，index为前标号，offset为后偏移量
+- 数组：连续的相同时数据类型的数的排列
+- 多维数组：行优先排列，A[i]含C个元素，每个元素K bytes，于是A[i]起始地址$A+i\times(C\times K)$，访存形式(offset,index,bytes)，index为前标号，offset为后偏移量
 
 ```C
 // 编译时知道N大小
@@ -83,6 +83,7 @@ int var_ele(int n, int a[n][n], int i, int j){
 ```
 
 由神奇方法引出汇编：
+
 ```C
 // 神奇
 int var_ele(int n, int a[n][n], int i, int j){
@@ -122,7 +123,9 @@ _start:
 ```
 
 ### 执行汇编
+
 使用shell脚本：编写_sh文件
+
 ```sh
 $ vi asm_sh
 echo as -o $1.o $1.S
@@ -133,7 +136,9 @@ echo running $1
 ./$1
 $ chmod +x asm_sh
 ```
+
 运行程序：
+
 ```sh
 $ ./asm_sh hello
 ```
@@ -237,6 +242,7 @@ movsx r32, r/m16|16位数据符号扩展为32位数据
 x64见[note](Language/Assembly/notes/index.md)
 
 #### xchg
+
 指令格式（Intel syntax）|说明
 :-:|:-:
 xchg r, r|通用寄存器与通用寄存器交换（有一个操作数为累加器时是单字节指令）
@@ -262,7 +268,9 @@ xchg m, r|通用寄存器与内存单元交换
 #### loop
 
 trick:
+
 将`.rept`和`.endr`之间行序列重复`count`次
+
 ```S
 .rept count
 ...
@@ -304,11 +312,12 @@ $\leqslant$条件码：$ZF=1$ || $SF\neq OF$，前者表示结果为0，后者�
 ###### test指令：逻辑比较
 
 语义：temp <- src1 & src2
+
 CF=OF=0, SF, ZF, PF根据结果设置，AF未定义
 
 TEST指令用于为条件转移指令设置标志位
-一般用于与零比较的操作：
-等于0，大于0，小于0
+
+一般用于与零比较的操作：等于0，大于0，小于0
 
 指令格式（Intel syntax）|说明
 :-:|:-:
@@ -320,10 +329,10 @@ test r/m, r|寄存器或内存单元与寄存器比较（8/16/32位）
 `cmpx   src1, src2`类似sub
 
 AT&T语义：temp <- src2 - SignExtend(src1)
+
 如SUB指令一样设置标志位CF, OF, SF, ZF, AF, PF，但不产生计算结果，不会赋值到src
 
-CMP指令用于为条件转移指令设置标志位
-用于任意的条件比较
+CMP指令用于为条件转移指令设置标志位,用于任意的条件比较
 
 
 > 短跳转：相对偏移量为8位有符号数，-128～127
@@ -341,9 +350,11 @@ Jcc  rel32|近跳转（相对偏移量为32位有符号数）
 Jcc是相对跳转指令，跳转偏移量由汇编器计算，汇编指令只需要提供”Jcc  label”
 
 可使用数字标号+b/f：
+
 对于局部标号N，如果N是一个正整数，则标号N可以在同一段代码中多次出现
-Nb：紧邻的后一个标号N，’b’表示backward
-Nf： 紧邻的前一个标号N，’f’表示forward
+
+- Nb：紧邻的后一个标号N，’b’表示backward
+- Nf： 紧邻的前一个标号N，’f’表示forward
 
 ![jcc_symbol](photos/jcc_symbol.png)
 
@@ -356,7 +367,9 @@ JMP|r/m32|绝对地址间接跳转（绝对地址为寄存器或内存单元的�
 JMP|ptr16:16<br>JMP  ptr16:32<br>JMP  m16:16<br>JMP  m16:32|远跳转（地址：seg：offset）
 
 相对地址跳转，汇编指令格式：”JMP  label”，相对地址偏移量由汇编器自动确定
+
 绝对地址是指在段内的偏移地址，注意寄存器前要加*：`jmp   *%edx`
+
 ```S
     mov $L1,%edx
     jmp *%edx
@@ -367,7 +380,9 @@ L1:
 同样可以使用数字+b/f的相对地址跳转
 
 ##### switch_case
+
 大规模使用跳转表
+
 注意跳转表的指令字长，为了寻址到正确的指令，需要对`switch(x)`中`x`进行左右位移动（sal/shl/sar）
 
 不使用跳转表也可以使用二叉搜索树方式处理，二分搜索
@@ -387,11 +402,13 @@ L1:
     <ending for_loop>
     ret
 ```
+
 比较代码在后但是先跳转进行比较
 
 ##### while
 
 三段：
+
 ```S
 #while_loop
     <initialize>
@@ -409,6 +426,7 @@ L1:
 ##### do_while
 
 三段：
+
 ```S
 #for_loop
     <initialize>
@@ -433,9 +451,11 @@ CFLAG决定是否mov
 ### 过程
 
 x86_linux_32的程序栈为自顶向下生长的栈，地址向上增长，栈向下生长
+
 栈顶地址`0xbffffxxx`，栈顶指针`%esp`，栈单元大小为32位
 
 程序栈的作用：
+
 - 传递函数的参数、返回值等
 - 存放函数的局部变量、返回地址等
 - 保存寄存器的旧值以备将来恢复使用
@@ -443,7 +463,9 @@ x86_linux_32的程序栈为自顶向下生长的栈，地址向上增长，栈�
 - 由操作系统在创建进程时创建
 
 栈帧：分配给一个过程使用的栈空间
+
 包括：
+
 - 过程的局部变量
 - 子过程的形参地址单元
 - 调用子过程的返回地址
@@ -452,13 +474,16 @@ x86_linux_32的程序栈为自顶向下生长的栈，地址向上增长，栈�
 当前的栈空间为由嵌套调用的一系列过程的栈帧组成，栈帧依次向下增长
 
 栈帧的分配：
+
 - 栈桢的主体是局部变量和形参
 - 栈桢以16字节为单位分配
 - 以容纳所有局部变量和形参数量最多的子函数的形参为限
 - 局部变量（内部变量）分配在栈桢底部，形参（参数）分配在栈桢的顶部
 
 可将函数`%esp`赋值到`%ebp`，后者充当栈顶指针，因此在访问当前过程（函数）参数的时候使用(%ebp)的正偏移量，注意在过程初始需要`push %ebp`，最后需加`leave`
+
 而后可以将`%esp`减去栈帧size，开辟当前栈帧，而后也可在内调用子过程
+
 开辟当前栈空间后，%ebp的负偏移量可视作将数字存储到栈中
 
 若不赋值，无需调用子过程，则可直接使用`%esp`来访问参数。
@@ -474,6 +499,7 @@ x86_linux_32的程序栈为自顶向下生长的栈，地址向上增长，栈�
 `call dest`，将下指令地址压栈，跳转到dest所指目标地址执行
 
 等价于：
+
 - `push(eip):eip=eip+dest`相对地址
 - `push(eip):eip=dest`绝对地址
 
@@ -500,13 +526,15 @@ FUNC:
 
 ##### ret
 
-`ret`
-`ret    src`
+- `ret`
+- `ret    src`
+
 从过程返回，等价于`eip<-pop()`,`src`立即数`Imm16`，再退栈`src`字节，`esp=esp+src`，跳到返回地址执行。
 
 ##### push
 
 `push src`
+
 栈指针下移一个单元，将操作数`src`值压入该栈单元
 
 操作数可为符号扩展的立即数，寄存器内容（包括数据/单字节指令），段寄存器内容
@@ -514,11 +542,13 @@ FUNC:
 ##### pop
 
 `pop dest`
+
 将栈顶单元内容传输到`dest`所在单元，栈指针上移一个单元格
 
 ##### leave
 
 释放当前栈帧
+
 将`%ebp`寄存器的值传给`%esp`，等价于：`esp=ebp; ebp=pop()`，因此有用到ebp时最初需push，最后的pop隐含在leave
 
 注意调用过程时候会将返回地址（下地址）压栈，因此不能直接pop，而要参照`%esp`的位置进行操作
@@ -564,6 +594,7 @@ function:
 约定寄存器的使用方式，保存/恢复的义务，参数与返回值的传递方式，栈帧的格式/维护义务
 
 x86-linux-32
+
 1. 参数/返回值约定：
     - 参数通过栈传递
     - 参数的传递顺序是从右向左
@@ -587,6 +618,7 @@ x86-linux-32
     - 栈单元大小是32位
 
 x86-linux-64
+
 1. 参数与返回值约定
     - 前6个参数通过寄存器传递
     - 第7个参数起通过栈传递，传递顺序是从右向左
@@ -628,19 +660,17 @@ arg6|ebp|r9
 - SHR，补0
 
 指令格式：`sxx  count, dest`，dest移动count次
+
 双精度移动：`shld   count, src, dest`，右侧低位补充src的count个高位
 
 #### 乘除
 
 - `mulx src`：无符号乘法，src与操作数累加器(AL/AX/EAX)相乘，结果存放在(`AX`(`[AH:AL]`),`[DX:AX]`,`[EDX:EAX]`)，高位存放在`AH/DX/EDX`
-
 - `divx src`:无符号除法，隐含dest(`AX`(`[AH:AL]`),`[DX:AX]`,`[EDX:EAX]`)除src，结果放在dest，商在低位寄存器，余数位于高位寄存器
-
 - `imulx src`, `imulx src, dest`, `imulx dest, src1, src2`
     - 单操作数与上相同
     - 双操作数，src与dest相乘，结果截断后放在dest
     - 三操作数，src1与src2相乘，结果截断后放在dest
-
 - `idic`
 
 #### 扩展
@@ -657,24 +687,26 @@ convert
     - 双字扩展为四字，[EDX:EAX]<- signed-extend(EAX)
 
 #### 装载有效地址
+
 - `leax dest, src`，dest <- effective address(src)
     - 方便，常用来直接计算
 
 #### nop
 
 #### SETcc
+
 - `setcc    dest`，若条件码满足，则dest=1，否则dest=0
-
-
 
 ### x87浮点
 
 #### 运行环境
 
 浮点数存储在8个80位寄存器（`R0`~`R7`），1位符号位，15位指数（阶码），64位尾码
+
 16位控制寄存器、状态寄存器、`tag`寄存器，末x指令指示，操作数指示，11位操作码
 
 寄存器按栈的方式存储：
+
 1. `TOP`为栈顶指针，初始位置为ST(0)
 2. 寄存器寻址相对栈顶位置，环形回绕
 
@@ -703,21 +735,24 @@ x86浮点在内存单元中little endian存放，符号位为最高位，尾数�
 
 ##### 舍入模式
 
-取更接近真实值
-不超过精确值
-不小于精确值
-绝对值不大于精确值绝对值
+- 取更接近真实值
+- 不超过精确值
+- 不小于精确值
+- 绝对值不大于精确值绝对值
 
 #### 浮点指令
 
 指令助记符以字母F开头
+
 指令助记符的第二个字母指明内存操作数类型
+
 - B = bcd
 - I = integer
 - P = pop back
 - no letter: floating point
 
 浮点装载常数
+
 - FLD1 –  Load +1.0
 - FLDZ –  Load +0.0
 - FLDPI –  Load π
@@ -727,28 +762,35 @@ x86浮点在内存单元中little endian存放，符号位为最高位，尾数�
 - FLDLG2 –  Load log102
 
 浮点指令操作数：
+
 - 操作数个数：0, 1, 2
 - 没有立即数操作数
 - 没有通用寄存器操作数 (EAX, EBX, ...)
 - 2个操作数时至少1个操作数为浮点寄存器
 
 常用指令：
+
 - 浮点数据传输指令
+
 FLD 、FST 、FSTP 、FXCH 、FCMOVcc
 FLD1 、FLDZ 、FLDPI、FLDL2E 、FLDLN2 、FLDL2T 、FLDLG2 
+
 - 浮点算术指令
+
 FADD 、FADDP 、FSUB 、FSUBP 、FSUBR 、FSUBRP  
 FMUL 、FMULP 、FDIV 、FDIVP 、FDIVR 、FDIVRP  
 FCHS 
+
 - 浮点比较指令
+
 FCOMI 、FUCOMI 、FCOMIP 、FUCOMIP
 
-`FLD`：格式`FLD src`，将`src`的值压入浮点寄存器栈
-load常数的时候无操作数，直接压入浮点寄存器栈
-`FST`/`FSTP`：格式`FST dest`/`FSTP dest`，将浮点栈顶寄存器ST(0)存入dest，后者还要进行弹栈
-操作数可以是`m32fp`(单精度浮点存入32位内存单元),`m64fp`,`m80fp`(仅限fstp),`st(i)`(将ST(0)存入ST(i))
-`FXCH`：格式：`FXCH ST(i)`-交换ST(0)和ST(i)内容；`FXCH`-交换ST(0)和ST(1)内容
-`FADD`：格式：`FADD src`时默认`dest`为ST(0)；`FADD src, dest`
+- `FLD`：格式`FLD src`，将`src`的值压入浮点寄存器栈
+    - load常数的时候无操作数，直接压入浮点寄存器栈
+- `FST`/`FSTP`：格式`FST dest`/`FSTP dest`，将浮点栈顶寄存器ST(0)存入dest，后者还要进行弹栈
+    - 操作数可以是`m32fp`(单精度浮点存入32位内存单元),`m64fp`,`m80fp`(仅限fstp),`st(i)`(将ST(0)存入ST(i))
+- `FXCH`：格式：`FXCH ST(i)`-交换ST(0)和ST(i)内容；`FXCH`-交换ST(0)和ST(1)内容
+- `FADD`：格式：`FADD src`时默认`dest`为ST(0)；`FADD src, dest`
 
 注意AT&T中为`%st`
 
@@ -759,13 +801,20 @@ load常数的时候无操作数，直接压入浮点寄存器栈
 操作数为xmm/m64
 
 - 数据传输指令
+
 MOVSS、MOVSD
+
 - 运算指令
+
 ADDSS、SUBSS、MULSS、DIVSS、SQRTSS、MINSS、MAXSS
 ADDSD、SUBSD、MULSD、DIVSD、SQRTSD、MINSD、MAXSD
+
 - 比较指令
+
 COMSS、COMISS、UCOMISS
+
 - 转换指令
+
 CVTSS2SD、CVTSD2SS
 CVTSD2SI、CVTSI2SD、CVTTSD2SI
 CVTSS2SI、CVTSI2SS、CVTTSS2SI
@@ -778,10 +827,9 @@ CVTSS2SI、CVTSI2SS、CVTTSS2SI
     - 一条指令计算一个数据
 
 SSE2向量计算与标量计算
+
 - 向量计算：两个寄存器同时运算
 - 标量计算：只有一个寄存器参与运算
-
-
 
 #### x64浮点ABI
 
@@ -820,6 +868,7 @@ SSE2向量计算与标量计算
 31|ra|子函数返回地址
 
 Mips指令特点：
+
 - 固定指令长，二进制文件/内存占用空间>x86
 - 32通用寄存器，每个32位
 - 所有运算针对32位，没有对字节/半字的运算
@@ -874,6 +923,7 @@ BCzF|Branch on Coprocessor z False
 - `Assembler Instructions`: 参数，以字符串形式表示汇编指令，多条指令之间通过换行符隔开，也可以直接拆行加引号，自动cat字符串，注意每行指令最后有`\n\t`
 
 基本型不能访问局部变量
+
 - 局部变量为栈单元，无全局标号
 - 全局变量可直接通过名称访问对应存储位置
 
@@ -883,6 +933,8 @@ BCzF|Branch on Coprocessor z False
 函数声明之后用基本型，可直接写独立函数的汇编
 
 ### 扩展型
+
+参见[gnu文档](https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html)
 
 可看作由输入变量产生输出变量的一组汇编指令
 
@@ -898,9 +950,7 @@ asm [volatile]( Assembler Template
 ```
 
 - 指令模版：将需使用的C变量寄存器用引用记号`%num`（num指数字，从%0开始，输入输出操作数统一编号，因此输出总在前）代替，而后在之后的操作数中进行选择，按序填充，C编译器负责将操作数的引用记号替换为分配的寄存器或内存单元。
-
 - 输入输出变量为以逗号分隔的C变量
-
 - clobbers中为以逗号分隔的寄存器等值，被指令模版修改但不再输出变量中
 
 ##### 输出操作数格式
@@ -965,10 +1015,13 @@ C在分配寄存器时不使用clobber列出的寄存器，clobbers中寄存器�
 #### 代码外提
 
 循环内重复执行的代码且结果相同的代码移到外面
+
 比如乘法
+
 循环判断时调用的函数（编译器会将过程看作黑盒，很难优化）`strlen`
 
 访存优化，编译器保守处理，消除内存别名，将中间结果存在寄存器，减少访存
+
 ```C
 for
     for
@@ -999,6 +1052,7 @@ for
 #### Cache
 
 访问局部性分为三种基本形式
+
 - 时间局部性指的是，程序在运行时，最近刚刚被引用过的一个内存位置容易再次被引用，比如在调取一个函数的时候，前不久才调取过的本地参数容易再度被调取使用。
 - 空间局部性指的是，最近引用过的内存位置以及其周边的内存位置容易再次被使用。空间局部性比较常见于循环中，比如在一个数列中，如果第3个元素在上一个循环中使用，则本次循环中极有可能会使用第4个元素。
 - 第三种为循序局部性。
@@ -1044,21 +1098,29 @@ section header table|offsets and sizes of each section
 #### 链接过程
 
 1. 符号解析
+
 由编译器将程序定义与引用符号储存在符号表中
+
 符号分为：全局符号，外部符号，局部符号
+
 强符号：已定义全局变量，弱符号：未定义全局变量
+
 - 不允许同名变量被多个强符号定义，Linker error
 - 同名变量被一个强符号和多个弱符号定义，选择强符号
 - 若被多个弱符号定义，任选
 
 尽可能避免使用全局变量
+
 否则：
+
 - 使用static
 - 在定义全局变量的时候初始化
 - 使用extern如果该变量为外部全局变量
 
 2. 重定位
+
 将不同.o文件的代码段和数据段分别合并为单一代码段和数据段
+
 重定位引用符号，映射到新位置上
 
 ### 库
@@ -1066,6 +1128,7 @@ section header table|offsets and sizes of each section
 对通用函数包，根据链接器，可将函数放在单个或多个源文件中
 
 静态库(static library)：
+
 - 将相关的可重定位的目标文件.o链接成一个又索引的单一.a文件(archive)
 - 连接器在一个或多个.a文件中寻找解析程序中出现的未定义的外部引用符号
 - 若某个.a文件的一个.o成员文件解析了符号引用，则只将.o链接入可执行目标文件
@@ -1073,9 +1136,11 @@ section header table|offsets and sizes of each section
 常用库文件：`libc.a`，C标准库；`libm.a`，C数学库
 
 有静态库链接过程：
+
 - 由多个.o文件连接到Archiver，生成.a文件，由之前生成的.o文件联通.a文件一同进入链接器，生成可执行文件
 
 连接器解析外部引用符号的算法：
+
 - 按照命令行提供的顺序扫描.o文件和.a文件。（因此若命令行输入不正确则不对）
 - 在扫描过程中，保持一个当前未解决的引用列表。
 - 当遇到每个新的.o或.a文件obj时，尝试根据obj中定义的符号来解决列表中的每个未解决的引用。
@@ -1086,6 +1151,7 @@ section header table|offsets and sizes of each section
 动态链接库，dll, .so文件
 
 动态链接(dynamic linking)过程：
+
 - main.c与vector.h进入Translator后生成main.o
 - .so文件与.o文件进入linker后部分链接生成可执行文件，此时.so文件参与的只有重定位和符号表信息
 - 而后由loader和.so剩余的code和data输送进动态linker生成完整的可执行文件
@@ -1095,6 +1161,7 @@ section header table|offsets and sizes of each section
 ### BIOS
 
 Basic Input Output System
+
 - POST
     - Power On Self Test
 - 引导硬件初始化
@@ -1116,12 +1183,14 @@ Basic Input Output System
 段式存储
 
 段寄存器(16位)
+
 - CS: code segment
 - DS: data
 - SS: stack
 - ES, FS, GS: additional
 
 实地址模式的段式存储
+
 - 实地址模式为x86处理器的启动模式
     - 1MB的可寻址内存空间，程序可访问内存任意位置
 - 线性地址等于16为段地址与16为偏移量的组合
@@ -1131,7 +1200,8 @@ Basic Input Output System
 ### IO地址空间
 
 独立的64K地址空间
-    - 0x0000~0xFFFF
+
+- 0x0000~0xFFFF
 
 IO Port用于访问硬件设备
 
@@ -1145,13 +1215,16 @@ IO Port用于访问硬件设备
     - 依赖文件
     - 编译动作
         - 注意每个行动作前面只能为tab
+        
 例：
+
 ```makefile
 target xxx: prerequisites ...
     recipe1
     recipe2
     ...
 ```
+
 - 变量
     - 可重复替换的字符串
         - 如：CC = gcc
@@ -1165,6 +1238,7 @@ target xxx: prerequisites ...
 将链接是命令集中在一个文件中执行
 
 格式：
+
 ```
 OUTPUT_FORMAT("binary")
 OUTPUT_ARCH("i386")
@@ -1191,6 +1265,7 @@ SECTIONS(
     - interrupt return，从中断处理程序返回被中断的程序，相当于`popx eip,cs,eflags`
 
 一般中断处理程序：
+
 ```
 Inthandler:
     保护寄存器
@@ -1230,13 +1305,15 @@ int myfunc(char *dest, int size){
 若size超过64，dest将额外获得buf0[]的内容
 
 很多C库函数不检查buffer大小：
-gets，strcpy
-scanf, fscanf, sscanf, when given %s conversion specification 
+
+gets，strcpy, scanf, fscanf, sscanf, when given %s conversion specification 
 
 安全：
+
 fgets, strncpy, scanf with %ns
 
 solution:
+
 - 使用安全库函数限制串长
 - 编译时加入`-fno-stack-protector`编译选项
 - 改变控制流，在buf超出size位置加入函数指针，若被攻击则触发对应函数
@@ -1247,5 +1324,6 @@ solution:
 - 通过cache获得限制访问地址内容
 
 原理：
+
 - 利于cache访问带来的时间差
 - 通过测量数据访问时间判断是否在cache中
