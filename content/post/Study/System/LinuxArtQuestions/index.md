@@ -205,7 +205,7 @@ $$physical\ addr = page\_directory\_entry\_table[virtual\ addr[23:22]][virtual\ 
 1、计算内核代码段、数据段的段基址、段限长、特权级。
 {{% /hint %}}
 
-GDT第二项：`0x00c09a0000000fff`，根据[段描述符结构]({{< ref "/post/Study/System/IA32Notes/index.md#段描述符" >}})，[43:41]为`101`，即代码段，段基址0，段限长0xfff，特权级为[46:45]，即0
+GDT第二项：`0x00c09a0000000fff`，根据[段描述符结构]({{< ref "/post/Study/System/IA32Notes/index.md#段描述符" >}})，[43:41]为`101`，即代码段，段基址0，段限长根据G(Granularity，粒度)位决定是否是字节为单位还是4KB为单位，此处G为1，因此段限长为$0x1000 \times 4KB = 16MB$，特权级为[46:45]，即0
 
 GDT第三项：`0x00c0920000000fff`，[43:41]为`001`，为数据段，数据同上
 
@@ -252,8 +252,8 @@ $4 = {a = 0xa4300068, b = 0x8201}
 
 可以印证GDT中所有项都是0特权级，表明只有内核能够访问GDT中的表项，利用GDT表项设置`LDTR`，而LDT中[46:45]位均为`0x11`即3特权级。
 
-- 进程0代码段段基址0，段限长`0x9f`，特权级3
-- 进程0数据段段基址0，段限长`0x9f`，特权级3
+- 进程0代码段段基址0，段限长$0xa0 \times 4KB = 640KB$，特权级3
+- 进程0数据段段基址0，段限长$640KB$，特权级3
 
 {{% hint degree="warning" title="问题" %}}
 3、`fork`进程1之前，为什么先调用`move_to_user_mode()`？用的是什么方法？解释其中的道理。
@@ -453,7 +453,7 @@ answer: 通过反汇编查看`copy_process`函数中使用这些参数的代码�
 
 根据x86手册，异常处理流程的栈安排如下：
 
-![interrupt_stack](./photos/interrupt_stack.png)
+![interrupt_stack](photos/interrupt_stack.png)
 
 由图可见，硬件已经在陷入时帮助将必要参数压栈，而且顺序正好是五个参数对应的顺序。需要注意的是`iret`时必须仍然保持这个栈，以便正确返回用户态执行。
 
@@ -489,27 +489,94 @@ answer: 检查传入的系统调用号是否超出了支持的系统调用数量
 ## 第四次作业
 
 {{% hint degree="warning" title="问题" %}}
-1、`copy_process`函数的参数最后五项是：`long eip, long cs, long eflags, long esp, long ss`。查看栈结构确实有这五个参数，奇怪的是其他参数的压栈代码都能找得到，确找不到这五个参数的压栈代码，反汇编代码中也查不到，请解释原因。
+1、分析`copy_page_tables()`函数的代码，叙述父进程如何为子进程复制页表。
 {{% /hint %}}
 
-{{% hint degree="warning" title="问题" %}}
-2、分析`get_free_page()`函数的代码，叙述在主内存中获取一个空闲页的技术路线。
-{{% /hint %}}
+Answer: 代码如下：
+
+```C
+int copy_page_tables(unsigned long from,unsigned long to,long size)
+{
+	unsigned long * from_page_table;
+	unsigned long * to_page_table;
+	unsigned long this_page;
+	unsigned long * from_dir, * to_dir;
+	unsigned long nr;
+
+	if ((from&0x3fffff) || (to&0x3fffff))
+		panic("copy_page_tables called with wrong alignment");
+	from_dir = (unsigned long *) ((from>>20) & 0xffc); /* _pg_dir = 0 */
+	to_dir = (unsigned long *) ((to>>20) & 0xffc);
+	size = ((unsigned) (size+0x3fffff)) >> 22;
+	for( ; size-->0 ; from_dir++,to_dir++) {
+		if (1 & *to_dir)
+			panic("copy_page_tables: already exist");
+		if (!(1 & *from_dir))
+			continue;
+		from_page_table = (unsigned long *) (0xfffff000 & *from_dir);
+		if (!(to_page_table = (unsigned long *) get_free_page()))
+			return -1;	/* Out of memory, see freeing */
+		*to_dir = ((unsigned long) to_page_table) | 7;
+		nr = (from==0)?0xA0:1024;
+		for ( ; nr-- > 0 ; from_page_table++,to_page_table++) {
+			this_page = *from_page_table;
+			if (!(1 & this_page))
+				continue;
+			this_page &= ~2;
+			*to_page_table = this_page;
+			if (this_page > LOW_MEM) {
+				*from_page_table = this_page;
+				this_page -= LOW_MEM;
+				this_page >>= 12;
+				mem_map[this_page]++;
+			}
+		}
+	}
+	invalidate();
+	return 0;
+}
+```
+
+1. 首先检查是否是4K页对齐
+2. 计算页目录项的内存地址，页目录项index占据虚拟地址[22]位及以上，内存地址按字节寻址，因此右移20位后清空后两位；对齐`size`，`size = ((unsigned) (size+0x3fffff)) >> 22;`是一个4K大小对齐操作
+3. 按照`size`循环复制页表
+    1. 检查`from`/`to`的位置页目录表项是否Present，理应从Present向非Present设置
+    2. 从`from`的地址取出页表基址
+    3. 为`to`页表申请新页，并且设置对应页目录表项
+    4. 注意Linux注释中指出：若`from`为0，则待复制的是内核页表，只需复制160项
+    5. Copy on Write: 将from中有效的项R/W位清空，变为只读，复制到to中
+    6. Linux注释：内核低地址(1MB以内)，不使用copy on write机制，否则需要将原先页面也改为只读，并且将`mem_map`页映射记录表中该页对应项自增
+4. 通过重写`cr3`刷新TLB
 
 {{% hint degree="warning" title="问题" %}}
-3、分析`copy_page_tables()`函数的代码，叙述父进程如何为子进程复制页表。
+2、进程0创建进程1时，为进程1建立了`task_struct`及内核栈，第一个页表，分别位于物理内存两个页。请问，这两个页的位置，究竟占用的是谁的线性地址空间，内核、进程0、进程1、还是没有占用任何线性地址空间？说明理由（可以图示）并给出代码证据。
 {{% /hint %}}
 
-{{% hint degree="warning" title="问题" %}}
-4、进程0创建进程1时，为进程1建立了`task_struct`及内核栈，第一个页表，分别位于物理内存两个页。请问，这两个页的位置，究竟占用的是谁的线性地址空间，内核、进程0、进程1、还是没有占用任何线性地址空间？说明理由（可以图示）并给出代码证据。
-{{% /hint %}}
+Answer: 使用内核的线性地址空间，位于函数`copy_mem`中，图示如下：
+
+![process1_memspace](photos/process1_memspace.png)
+
+此时进程0通过`fork`系统调用进入内核态，内核以3特权执行代码，能够使用内核线性地址空间索引包括页表等的物理地址，内核通过`get_free_page`在整个线性地址空间中分配页面。进程1的页表是不能被进程1用户态访问的，一定不在进程1可访问的段和页中，不在进程1的地址空间。
+
+由Linux分段机制，在`fork`操作`copy_mem`函数中，有如下代码：
+
+```C
+	new_data_base = new_code_base = nr * 0x4000000;
+	p->start_code = new_code_base;
+	set_base(p->ldt[1],new_code_base);
+	set_base(p->ldt[2],new_data_base);
+```
+
+可见每64MB分段分给一个进程，不同进程所使用的页表完全隔离，进程1开始就不可能接触到起始位置为0的内存区域所在的页表，其中包括页目录表和页表。
 
 {{% hint degree="warning" title="问题" %}}
-5、假设：经过一段时间的运行，操作系统中已经有5个进程在运行，且内核为进程4、进程5分别创建了第一个页表，这两个页表在谁的线性地址空间？用图表示这两个页表在线性地址空间和物理地址空间的映射关系。
+3、假设：经过一段时间的运行，操作系统中已经有5个进程在运行，且内核为进程4、进程5分别创建了第一个页表，这两个页表在谁的线性地址空间？用图表示这两个页表在线性地址空间和物理地址空间的映射关系。
 {{% /hint %}}
 
+都在内核的线性地址空间，线性地址空间为`256MB~320MB`、`320MB~384MB`，此处只设置了两个页表，经过页目录表`0x40/0x50`项所引到页目录，而后根据[21:12]位索引页表，最后拼接上页内偏移即可。
+
 {{% hint degree="warning" title="问题" %}}
-6、
+4、
 
 ```C
 #define switch_to(n) {\  
@@ -528,17 +595,62 @@ __asm__("cmpl %%ecx,_current\n\t" \
 }
 ```
 
-代码中的`ljmp %0\n\t `很奇怪，按理说`jmp`指令跳转到得位置应该是一条指令的地址，可是这行代码却跳到了`m (*&__tmp.a)`，这明明是一个数据的地址，更奇怪的，这行代码竟然能正确执行。请论述其中的道理。
+代码中的`ljmp %0\n\t `很奇怪，按理说`jmp`指令跳转到的位置应该是一条指令的地址，可是这行代码却跳到了`m (*&__tmp.a)`，这明明是一个数据的地址，更奇怪的，这行代码竟然能正确执行。请论述其中的道理。
 {{% /hint %}}
 
-{{% hint degree="warning" title="问题" %}}
-7、进程0开始创建进程1，调用`fork()`，跟踪代码时我们发现，fork代码执行了两次，第一次，执行`fork`代码后，跳过`init()`直接执行了`for(;;) pause()`，第二次执行`fork`代码后，执行了`init()`。奇怪的是，我们在代码中并没有看到向转向`fork`的`goto`语句，也没有看到循环语句，是什么原因导致`fork`反复执行？请说明理由（可以图示），并给出代码证据。
-{{% /hint %}}
+Answer: 对于执行任务切换的远跳转，只有TSS选择符有用，偏移无用，对应于这里`__tmp.b`低2字节和`__tmp.a`，因此只要设置正确`__tmp.b`为新任务TSS选择符即可，类似`[CS:EIP]`，以6字节作为目的地址长指针
 
 {{% hint degree="warning" title="问题" %}}
-8、详细分析进程调度的全过程。考虑所有可能（`signal`、`alarm`除外）
+5、进程0开始创建进程1，调用`fork()`，跟踪代码时我们发现，fork代码执行了两次，第一次，执行`fork`代码后，跳过`init()`直接执行了`for(;;) pause()`，第二次执行`fork`代码后，执行了`init()`。奇怪的是，我们在代码中并没有看到向转向`fork`的`goto`语句，也没有看到循环语句，是什么原因导致`fork`反复执行？请说明理由（可以图示），并给出代码证据。
 {{% /hint %}}
 
+Answer: 内核与进程0开始分叉执行，Linux采用返回值来区分父子进程，内核先从`fork`系统调用返回，因为系统调用正常返回大于0的子进程`id`，通过`if`判断得到这是父进程，直接跳到`for(;;) pause()`，设置可中断让出cpu，而后进程0被调度，因为`copy_process`时将`%eax`设置为0：
+
+```C
+int copy_process(int nr,long ebp,long edi,long esi,long gs,long none,
+		long ebx,long ecx,long edx,
+		long fs,long es,long ds,
+		long eip,long cs,long eflags,long esp,long ss)
+{
+    /* ... */
+	p->tss.eax = 0;
+    /* ... */
+	return last_pid;
+}
+```
+
+而进程0退出内核态后执行`fork`的下一行命令（这是`int`指令硬件压栈`eip`的结果：
+
+```asm
+    686a:	89 45 e4             	mov    %eax,-0x1c(%ebp)
+```
+
+将返回值`%eax`存入栈中变量位置，因此通过`if`判断这是进程0在执行，进入循环体执行`init()`
+
 {{% hint degree="warning" title="问题" %}}
-9、分析`panic`函数的源代码，根据你学过的操作系统知识，完整、准确的判断`panic`函数所起的作用。假如操作系统设计为支持内核进程（始终运行在0特权级的进程），你将如何改进`panic`函数？
+6、详细分析进程调度的全过程。考虑所有可能（`signal`、`alarm`除外）
 {{% /hint %}}
+
+在就绪态进程中选择剩余时间片最多的进程调度，若都不剩余时间片，则重新分配时间片，公式：$counter = \frac{counter}{2} + priority$
+
+{{% hint degree="warning" title="问题" %}}
+7、分析`panic`函数的源代码，根据你学过的操作系统知识，完整、准确的判断`panic`函数所起的作用。假如操作系统设计为支持内核进程（始终运行在0特权级的进程），你将如何改进`panic`函数？
+{{% /hint %}}
+
+源码如下：
+
+```C
+volatile void panic(const char * s)
+{
+	printk("Kernel panic: %s\n\r",s);
+	if (current == task[0])
+		printk("In swapper task - not syncing\n\r");
+	else
+		sys_sync();
+	for(;;);
+}
+```
+
+作用：打印错误信息，陷入死循环，在循环前将缓冲区同步到磁盘。配合条件判断可以有`assert`类似的效果，能够很及时地发现设计问题。
+
+由于目前只支持用户态进程，不用担心`panic`在陷入死循环后被打断，但是若引入内核进程，则必须在前面输出和磁盘读写完成后关中断防止被抢占，即使用`cli`指令
