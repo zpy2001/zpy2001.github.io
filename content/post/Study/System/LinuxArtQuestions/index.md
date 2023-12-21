@@ -191,7 +191,12 @@ Answer: Linux 0.11保护模式最高支持16MB内存，分在4个页表里，共
 
 公式：
 
-$$physical\ addr = page\_directory\_entry\_table[virtual\ addr[23:22]][virtual\ addr[21:12]] + virtual\ addr[11:0]$$
+$$
+\begin{aligned}
+physical\ addr & = page\ directory\ entry\ table[virtual\ addr[23:22]][virtual\ addr[21:12]] \\\\
+ & + virtual\ addr[11:0]
+\end{aligned}
+$$
 
 代码见上题
 
