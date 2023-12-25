@@ -180,7 +180,7 @@ static void Divide(int x, int y, out int quotient, out int remainder)
 public static void OutUsage()
 {
     Divide(10, 3, out int quo, out int rem);
-    Console.WriteLine($"{quo} {rem}");	// "3 1"
+    Console.WriteLine($"{quo} {rem}");    // "3 1"
 }
 ```
 

@@ -74,8 +74,8 @@ ADT:
 
 ```C
 typedef  struct  Lnode {
- 	ElemType  data;  /*数据域，保存结点的值*/
-	struct   Lnode  *next;            /*指针域*/
+     ElemType  data;  /*数据域，保存结点的值*/
+    struct   Lnode  *next;            /*指针域*/
 } Lnode, LinkedList; /*结点、链表的类型 */
 ```
 
@@ -84,8 +84,8 @@ typedef  struct  Lnode {
 ```C
 // 结点类型
 typedef struct LNode {  
-	ElemType       data;
-	struct LNode   *next;
+    ElemType       data;
+    struct LNode   *next;
 } Link, Position; 
 // 链表类型
 typedef struct {
@@ -94,7 +94,7 @@ typedef struct {
     // current指向当前被访问的结点的指针
     Link  *current; //其初始位置指向头结点
     int   curpos;     //指示当前指针位置,初值为0
-    int   len; 	      //指示链表长度
+    int   len;           //指示链表长度
 } LinkedList;
 ```
 
@@ -102,9 +102,9 @@ typedef struct {
 
 ```C
 typedef struct node{
-	int c;	//多项式，系数， 可以用float类型
-	int e;	//多项式，指数
-	struct node *next;
+    int c;    //多项式，系数， 可以用float类型
+    int e;    //多项式，指数
+    struct node *next;
 }Polynomial;
 ```
 p1和p2相当于两有序链表，以指数为key进行合并，若指数相同则系数相加，为0需删除该节点，否则按原操作
@@ -220,12 +220,12 @@ LIFO==FILO
 
 ```C
 typedef struct Node {
-    	ElemType data;
-    	struct Node *next;
+        ElemType data;
+        struct Node *next;
 }QNode;
 typedef struct {
-	QNode *front;   //删除进行处
-	QNode *rear;    //插入进行处
+    QNode *front;   //删除进行处
+    QNode *rear;    //插入进行处
 }LinkedQueue;
 ```
 
@@ -446,7 +446,7 @@ for (col=0; col<M.nu; ++col)  num[col] = 0;
 for (t=0; t<M.tu; ++t)  ++num[M.data[t].j];
 cpot[0] = 0;
 for (col=1; col<M.nu; ++col)
-	cpot[col] = cpot[col-1] + num[col-1];
+    cpot[col] = cpot[col-1] + num[col-1];
 ```
 
 时间复杂度为O(M.nu+M.tu)
@@ -475,15 +475,15 @@ ElemType Value(RLSMatrix M, int r, int c) {
 
 ```C
 typedef struct OLNode{
-	int i, j;
-	ElemType    e;
+    int i, j;
+    ElemType    e;
     struct OLNODE  *right, *down;
 } OLNode, *Olink;
 
 typedef struct{
-	//行和列链表 头指针向量的基址
-	Olink   *rhead, *chead;
-	in mu, nu, tu;
+    //行和列链表 头指针向量的基址
+    Olink   *rhead, *chead;
+    in mu, nu, tu;
 } CrossList
 ```
 
@@ -515,12 +515,12 @@ typedef struct{
 
 ```C
 typedef enum {ATOM, LIST} ElemTag;
-typedef struct GLNode {	
+typedef struct GLNode {    
     ElemTag tag; // ATOM or LIST
     union { //原子结点和表结点的联合部分
-        AtomType atom;	          
+        AtomType atom;              
         struct {struct GLNode *hp, *tp;} ptr;
-	    //ptr.hp, ptr.tp指向表结点的表头、表尾
+        //ptr.hp, ptr.tp指向表结点的表头、表尾
     }
 } *Glist;
 ```
@@ -531,11 +531,11 @@ typedef struct GLNode {
 
 ```C
 typedef enum {ATOM, LIST} ElemTag;
-typedef struct GLNode {	
+typedef struct GLNode {    
     ElemTag tag; // ATOM or LIST
     union { //原子结点和表结点的联合部分
-        AtomType atom;	          
-	    struct GLNode *hp;//指向子表的指针
+        AtomType atom;              
+        struct GLNode *hp;//指向子表的指针
      };
      struct GLNode *tp;
     //指向同一层下一个表元素结点的指针
@@ -547,12 +547,12 @@ typedef struct GLNode {
 m元多项式：
 
 ```C
-typedef struct MPNode {	
+typedef struct MPNode {    
      ElemTag  tag; 
      int            exp; //指数域
-     union {	//原子结点和表结点的联合部分
-          float   coef;   //系数域	          
-	struct MPNode *hp;
+     union {    //原子结点和表结点的联合部分
+          float   coef;   //系数域              
+    struct MPNode *hp;
      };
      struct MPNode *tp;//相当于线性链表的next
 } *Mplist;      //m元多项式广义表类型定义
@@ -699,8 +699,8 @@ CreateBiTree(BiTree &T)
 
 ```C
 typedef enum { Link, Thread } PointerThr;  
-	//Link==0，表示是指针，
-	//Thread==1，表示是线索
+    //Link==0，表示是指针，
+    //Thread==1，表示是线索
 typedef struct BiThrNod {
     TElemType        data;
     struct BiThrNode  *lchild, *rchild; //左右指针

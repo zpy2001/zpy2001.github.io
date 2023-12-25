@@ -239,7 +239,7 @@ movsx r16, r/m8|8位数据符号扩展为16位数据
 movsx r32, r/m8|8位数据符号扩展为32位数据
 movsx r32, r/m16|16位数据符号扩展为32位数据
 
-x64见[note](Language/Assembly/notes/index.md)
+x64见[note]({{/post/Study/Language/Program/Assembly/CourseNotes/index.md}})
 
 #### xchg
 

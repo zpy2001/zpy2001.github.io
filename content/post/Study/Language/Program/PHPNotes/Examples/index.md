@@ -546,8 +546,8 @@ class TransactionDemo {
             }
             // deduct from the transferred account
             $sql_update_from = 'UPDATE accounts
-				SET amount = amount - :amount
-				WHERE id = :from';
+                SET amount = amount - :amount
+                WHERE id = :from';
             $stmt = $this->pdo->prepare($sql_update_from);
             $stmt->execute(array(":from" => $from, ":amount" => $amount));
             $stmt->closeCursor();

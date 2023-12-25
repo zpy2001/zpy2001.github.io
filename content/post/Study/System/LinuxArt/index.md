@@ -93,7 +93,7 @@ $$physical\ address = segament\ base \ll 4 + segment\ offset$$
 
 #### 7.4.2-7,4,3
 
-```assembly
+```asm
 mov     ax, 0x1
 lmsw    ax
 jmpi    0, 8
@@ -162,17 +162,17 @@ Linux x86分页是在分段的基础上的，意味着逻辑地址需要先由�
 ```c
 #define _set_gate(gate_addr,type,dpl,addr) \
 __asm__ ("movw %%dx,%%ax\n\t" \
-	"movw %0,%%dx\n\t" \
-	"movl %%eax,%1\n\t" \
-	"movl %%edx,%2" \
-	: \                                                    // output
-	: "i" ((short) (0x8000+(dpl<<13)+(type<<8))), \        // %0
-	"o" (*((char *) (gate_addr))), \                       // %1
-	"o" (*(4+(char *) (gate_addr))), \                     // %2
-	"d" ((char *) (addr)),"a" (0x00080000))                // %edx, %eax
+    "movw %0,%%dx\n\t" \
+    "movl %%eax,%1\n\t" \
+    "movl %%edx,%2" \
+    : \                                                    // output
+    : "i" ((short) (0x8000+(dpl<<13)+(type<<8))), \        // %0
+    "o" (*((char *) (gate_addr))), \                       // %1
+    "o" (*(4+(char *) (gate_addr))), \                     // %2
+    "d" ((char *) (addr)),"a" (0x00080000))                // %edx, %eax
 
 #define set_trap_gate(n,addr) \
-	_set_gate(&idt[n],15,0,addr)
+    _set_gate(&idt[n],15,0,addr)
 ```
 
 ![IDT](photos/IDT.png)
@@ -195,7 +195,7 @@ fork执行过程：
 
 `_sys_fork`是汇编实现的，`int 0x80`软中断使`ss, esp, eflags, cs, eip`寄存器按顺序压入进程0内核栈
 
-参数使用栈传递，`_system_call`中，系统调用ABI参考[Assembly ABI]({{/post/Study/Language/Assembly/CourseNotes/index.md#ABI}})
+参数使用栈传递，`_system_call`中，系统调用ABI参考[Assembly ABI]({{/post/Study/Language/Program/Assembly/CourseNotes/index.md#ABI}})
 
 ### `sys_fork`
 
@@ -351,6 +351,8 @@ shell读取完`/etc/rc`后退出，执行`exit()`，释放页面、内存、文�
 
 ### 安装文件系统
 
+Linux内核`super_block[8]`结构体中第0项为根设备虚拟盘super block、第1项为硬盘super block，根设备虚拟盘中含有根文件系统
+
 1. 读取硬盘super block，加入系统`super_block[8]`中某项
 2. 将虚拟盘上指定inode读出，加载到系统`inode_table[32]`中
 3. 硬盘super block挂接到`inode_table[32]`指定的inode上
@@ -453,30 +455,30 @@ copy on write
 
 ```C
 struct buffer_head {
-	char * b_data;			/* pointer to data block (1024 bytes) */
-	unsigned long b_blocknr;	/* block number */
-	unsigned short b_dev;		/* device (0 = free) */
-	unsigned char b_uptodate;
-	unsigned char b_dirt;		/* 0-clean,1-dirty */
-	unsigned char b_count;		/* users using this block */
-	unsigned char b_lock;		/* 0 - ok, 1 -locked */
-	struct task_struct * b_wait;
-	struct buffer_head * b_prev;
-	struct buffer_head * b_next;
-	struct buffer_head * b_prev_free;
-	struct buffer_head * b_next_free;
+    char * b_data;            /* pointer to data block (1024 bytes) */
+    unsigned long b_blocknr;    /* block number */
+    unsigned short b_dev;        /* device (0 = free) */
+    unsigned char b_uptodate;
+    unsigned char b_dirt;        /* 0-clean,1-dirty */
+    unsigned char b_count;        /* users using this block */
+    unsigned char b_lock;        /* 0 - ok, 1 -locked */
+    struct task_struct * b_wait;
+    struct buffer_head * b_prev;
+    struct buffer_head * b_next;
+    struct buffer_head * b_prev_free;
+    struct buffer_head * b_next_free;
 };
 
 struct request {
-	int dev;		/* -1 if no request */
-	int cmd;		/* READ or WRITE */
-	int errors;
-	unsigned long sector;
-	unsigned long nr_sectors;
-	char * buffer;
-	struct task_struct * waiting;
-	struct buffer_head * bh;
-	struct request * next;
+    int dev;        /* -1 if no request */
+    int cmd;        /* READ or WRITE */
+    int errors;
+    unsigned long sector;
+    unsigned long nr_sectors;
+    char * buffer;
+    struct task_struct * waiting;
+    struct buffer_head * bh;
+    struct request * next;
 };
 ```
 

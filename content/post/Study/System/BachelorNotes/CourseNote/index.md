@@ -38,37 +38,37 @@ weight: 1
 包含信息：
 
 - CPU相关进程管理信息
-	- 状态
-		- 就续态
-		- 正在运行
-		- 阻塞态
-	- 寄存器，EFLAGS
+    - 状态
+        - 就续态
+        - 正在运行
+        - 阻塞态
+    - 寄存器，EFLAGS
 - 内存管理信息
-	- 栈，代码段和数据段
-	- 段，页表 
+    - 栈，代码段和数据段
+    - 段，页表 
 - I/O和文件管理
-	- 通信端口，目录，文件描述符
+    - 通信端口，目录，文件描述符
 
 进程原语(Primitives)
 
 原语：一般是指由若干条指令组成的程序段，用来实现某个特定功能，在执行过程中不可被中断
 
 - 创建和终止
-	- `exec, fork, wait, kill`
+    - `exec, fork, wait, kill`
 - 信号(?)
 - 操作
-	- 阻塞，放弃CPU控制权(yield)
+    - 阻塞，放弃CPU控制权(yield)
 - 同步
 
 - 创建进程 = 创建与初始化PCB
-	– 将数据和代码加载至内存
-	– 创建一个空的调用栈
-	– 初始化进程的状态
-	– 把进程标志为就绪态
+    – 将数据和代码加载至内存
+    – 创建一个空的调用栈
+    – 初始化进程的状态
+    – 把进程标志为就绪态
 - 克隆 = 复制与修改PCB
-	– 停止当前进程，并保存其状态
-	– 备份当前代码和数据，代码，栈和OS的状态
-	– 把进程标志为就绪态
+    – 停止当前进程，并保存其状态
+    – 备份当前代码和数据，代码，栈和OS的状态
+    – 把进程标志为就绪态
 
 UNIX:
 – fork克隆出一个进程
@@ -76,21 +76,21 @@ UNIX:
 
 进程操作：
 - 创建
-	- when:系统初始化、用户请求、当前进程执行系统调用 
+    - when:系统初始化、用户请求、当前进程执行系统调用 
 - 执行：从就绪态选择，分时间片
 - 等待（阻塞）：主动
-	- 请求并等待系统服务
-	- 启动某种操作，无法马上完成
-	- 需要的数据未到达
+    - 请求并等待系统服务
+    - 启动某种操作，无法马上完成
+    - 需要的数据未到达
 - 抢占（抢占式）
-	- 高优先级进程就绪
-	- 时间片用完
+    - 高优先级进程就绪
+    - 时间片用完
 - 唤醒（抢占式）
 - 结束
-	- 正常主动
-	- 错误主动
-	- 错误强制
-	- 被kill，强制
+    - 正常主动
+    - 错误主动
+    - 错误强制
+    - 被kill，强制
 
 进程上下文切换
 
@@ -108,20 +108,20 @@ UNIX:
 
 线程API
 - 创建
-	- fork(pthread_create), join
+    - fork(pthread_create), join
 - 互斥
-	- acquire(上锁), release(解锁)
+    - acquire(上锁), release(解锁)
 - 条件变量
-	- wait, signal, broadcast
+    - wait, signal, broadcast
 - 警报
-	- alert, alertwait, testalert
+    - alert, alertwait, testalert
 
 线程上下文切换可能除法进程上下文切换
 
 过程调用中调用者或被调用者保存部分上下文
 
 - 线程可能乱序恢复
-	- 无法用栈保存状态，每个线程有自己的栈
+    - 无法用栈保存状态，每个线程有自己的栈
 - 线程切换不会太频繁
 - 线程可以异步
 - 多线程并行，过程顺序执行
@@ -140,17 +140,17 @@ UNIX:
 - 核心驱动
 - 线程
 - 调度器
-	- 使用就绪队列存放所有就绪线程
-	- 在相同地址空间内调度(thread)
-	- 在新的地址空间内进行调度(process)
+    - 使用就绪队列存放所有就绪线程
+    - 在相同地址空间内调度(thread)
+    - 在新的地址空间内进行调度(process)
 
 - 用户级线程：
   - 用户级线程库实现线程上下文切换
   - 时钟中断会引入抢占
   - 当用户级线程被I/O事件阻塞时，整个进程都会被阻塞
 - 内核级线程
-	- 内核级线程被内核调度器调度
-	- 内核级线程的上下文切换开销远大于用户级（跨越保护边界）
+    - 内核级线程被内核调度器调度
+    - 内核级线程的上下文切换开销远大于用户级（跨越保护边界）
 
 ### 调度
 
@@ -257,8 +257,8 @@ Peterson
 
 共享变量：
 ```C
-int turn;	// 表示谁进入临界区
-bool flag[];	//表示进程是否准备进入临界区`
+int turn;    // 表示谁进入临界区
+bool flag[];    //表示进程是否准备进入临界区`
 ```
 
 进入区代码：
@@ -266,7 +266,7 @@ bool flag[];	//表示进程是否准备进入临界区`
 flag[i] = true;
 turn = j;
 while (flag[j] && turn == j){
-	;
+    ;
 }
 ```
 
@@ -282,42 +282,42 @@ flag[i] = false;
 获取锁：
 ```C
 Acquire(lock){
-	disable interrupts;
-	while(lock.value == BUSY){
-		enqueue(q, TCB);
-		Yield();
-	}
-	lock.value = BUSY;
-	enable interrupts;
+    disable interrupts;
+    while(lock.value == BUSY){
+        enqueue(q, TCB);
+        Yield();
+    }
+    lock.value = BUSY;
+    enable interrupts;
 }
 ```
 
 释放锁：
 ```C
 Release(lock){
-	disable interrupts; 
-	if(!is_empty(queue)){
-		dequeue(q, thread T);
-		wakeup(T);
-	}
-	else{
-		lock.value = FREE;
-	}
-	enable interrupts;
+    disable interrupts; 
+    if(!is_empty(queue)){
+        dequeue(q, thread T);
+        wakeup(T);
+    }
+    else{
+        lock.value = FREE;
+    }
+    enable interrupts;
 }
 ```
 ##### 原子操作
 
 - 测试和置位(test and set)
-	- 从内存单元中读取值
-	- 测试改值是否为1，返回真或假
-	- 内存单元值设置为1
+    - 从内存单元中读取值
+    - 测试改值是否为1，返回真或假
+    - 内存单元值设置为1
 
 ```C
 bool TestAndSet(bool *target){
-	bool rv = *target;
-	*target = true;
-	return rv;
+    bool rv = *target;
+    *target = true;
+    return rv;
 }
 ```
 
@@ -325,22 +325,22 @@ bool TestAndSet(bool *target){
 
 ```java
 class Lock{
-	int value = 0;
-	waitQueue q;
+    int value = 0;
+    waitQueue q;
 }
 
 lock::Acquire(){
-	while(test_and_set(value)) //spin or
-	{
-		enqueue(q, TCB);
-		do_schedule();
-	}
+    while(test_and_set(value)) //spin or
+    {
+        enqueue(q, TCB);
+        do_schedule();
+    }
 }
 
 Lock::Release(){
-	value = 0;
-	dequeue(q, thread t);
-	wakeup(t);
+    value = 0;
+    dequeue(q, thread t);
+    wakeup(t);
 }
 ```
 
@@ -352,27 +352,27 @@ store时检查load linked是否被修改，若有，重load
 
 ```C
 void Enchange(bool *a, bool *b){
-	bool tmp = *a;
-	*a = *b;
-	*b = tmp;
+    bool tmp = *a;
+    *a = *b;
+    *b = tmp;
 }
 ```
 
 - 软件方法
-	– 实现复杂
+    – 实现复杂
 - 中断
-	– 实现之后，只能用于单核处理器
+    – 实现之后，只能用于单核处理器
 - 原子操作指令与锁
-	– 大多数时间在用户层自旋
-	– 线程数比处理器数目多
+    – 大多数时间在用户层自旋
+    – 线程数比处理器数目多
 
 ## 死锁
 
 认为进程线程等价
 
 - 资源：请求、使用、释放
-	- 可抢占：CPU
-	- 不可抢占：磁盘，文件，互斥锁
+    - 可抢占：CPU
+    - 不可抢占：磁盘，文件，互斥锁
 
 饥饿：进程无限等待
 死锁：若进程集合中所有进程都在等待其余进程退出，但是所有进程不提前退出
@@ -389,10 +389,10 @@ void Enchange(bool *a, bool *b){
 银行家算法，调度方案，使所有进程能够完成
 
 - 单个资源
-	- 每个进程有个贷款额度
-	- 总的资源可能不能满足所有贷款额度
-	- 跟着分配的和仍然需要的资源
-	- 分配时检查安全性
+    - 每个进程有个贷款额度
+    - 总的资源可能不能满足所有贷款额度
+    - 跟着分配的和仍然需要的资源
+    - 分配时检查安全性
 
 数据结构：
 
@@ -414,12 +414,12 @@ Request[i][j] 线程T[i]请求资源R[j]的实例
 否则, T[i] 必须等待, 因为资源不可用
 3. 通过安全状态判断来确定是否分配资源给T[i]:
 生成一个需要判断状态是否安全的资源分配环境
-	Available = Available -Request[i];
-	Allocation[i]= Allocation[i] + Request[i];
-	Need[i]= Need[i]–Request[i];
+    Available = Available -Request[i];
+    Allocation[i]= Allocation[i] + Request[i];
+    Need[i]= Need[i]–Request[i];
 调用安全状态判断
-	如果返回结果是安全，将资源分配给T[i]
-	如果返回结果是不安全，系统会拒绝T[i]的资源请求
+    如果返回结果是安全，将资源分配给T[i]
+    如果返回结果是不安全，系统会拒绝T[i]的资源请求
 ```
 
 安全状态判断
@@ -438,8 +438,8 @@ Semaphores
 
 ```java
 class Semaphore{
-	int sem;
-	waitqueue q;
+    int sem;
+    waitqueue q;
 }
 ```
 
@@ -449,20 +449,20 @@ class Semaphore{
 
 ```C
 P(s){
-	while(s <= 0){
-		;
-	}
-	s--;
+    while(s <= 0){
+        ;
+    }
+    s--;
 }
 ```
 
 ```java
 Semaphore::P(){
-	sem--;
-	if(sem < 0){
-		enqueue(q, thread t);
-		block(t);
-	}
+    sem--;
+    if(sem < 0){
+        enqueue(q, thread t);
+        block(t);
+    }
 }
 ```
 
@@ -470,17 +470,17 @@ Semaphore::P(){
 
 ```C
 V(s){
-	s++;
+    s++;
 }
 ```
 
 ```java
 Semaphore::V(){
-	sem++;
-	if(sem<=0){
-		dequeue(q, t);
-		wakeup(t);
-	}
+    sem++;
+    if(sem<=0){
+        dequeue(q, t);
+        wakeup(t);
+    }
 }
 ```
 
@@ -495,25 +495,25 @@ Semaphore::V(){
 
 ```java
 class BoundedBuffer{
-	mutex = new Semaphore(1);
-	emptyBuffer = new Semaphore(0);
-	fullBuffer = new Semaphore(n);
+    mutex = new Semaphore(1);
+    emptyBuffer = new Semaphore(0);
+    fullBuffer = new Semaphore(n);
 }
 
 BoundedBuffer::Deposit(c){
-	fullBuffer->P();
-	mutex->P();
-	add c to buffer;
-	mutex->V();
-	emptyBuffer->V();
+    fullBuffer->P();
+    mutex->P();
+    add c to buffer;
+    mutex->V();
+    emptyBuffer->V();
 }
 
 BoundedBuffer::Remove(c){
-	emptyBuffer->P();
-	mutex->P();
-	remove c from buffer;
-	mutex->V();
-	fullBuffer->V();
+    emptyBuffer->P();
+    mutex->P();
+    remove c from buffer;
+    mutex->V();
+    fullBuffer->V();
 }
 ```
 
@@ -533,37 +533,37 @@ BoundedBuffer::Remove(c){
 每个条件变量表示一种等待原因，对应一个等待队列
 
 - `wait()`操作
-	- 将自己阻塞在等待队列
-	- 唤醒一个等待者或者释放管程的互斥操作
+    - 将自己阻塞在等待队列
+    - 唤醒一个等待者或者释放管程的互斥操作
 - `signal()`操作
-	- 将等待队列中的一个线程唤醒
-	- 若等待队列为空，则等同空操作
+    - 将等待队列中的一个线程唤醒
+    - 若等待队列为空，则等同空操作
 
 ### 条件变量实现
 
 ```java
 class Condition{
-	int numWaiting = 0;
-	waitqueue q;
+    int numWaiting = 0;
+    waitqueue q;
 }
 
 Condition::Wait(lock){
-	numWaiting++;
-	enqueue(q, thread t);
-	release(lock);
-	do_schedule();	// need mutex
-	acquire(lock);
+    numWaiting++;
+    enqueue(q, thread t);
+    release(lock);
+    do_schedule();    // need mutex
+    acquire(lock);
 }
 // Mesa风格管程：
 // 原子解锁mutex并加入condition对应的等待队列
 // 被唤醒时重新锁定mutex
 
 Condition::Signal(){
-	if(numWaiting > 0){
-		dequeue(q, thread t);
-		wakeup(t);
-		numWaiting--;
-	}
+    if(numWaiting > 0){
+        dequeue(q, thread t);
+        wakeup(t);
+        numWaiting--;
+    }
 }
 // Mesa风格管程：
 // 当没有线程阻塞于该条件变量时，do nothing
@@ -575,7 +575,7 @@ Condition::Signal(){
 ```
 Acquire(mutex);
 while(没有资源){
-	wait(mutex,cond);
+    wait(mutex,cond);
 }
 使用资源
 release(mutex);
@@ -594,41 +594,41 @@ release(mutex);
 
 ```java
 class BoundedBuffer{
-	Lock lock;
-	int count = 0;	// 利用共享变量确定缓冲区资源数
-	Condition notFull, notEmpty;
+    Lock lock;
+    int count = 0;    // 利用共享变量确定缓冲区资源数
+    Condition notFull, notEmpty;
 }
 
 BoundedBuffer::Deposit(c){
-	lock->Acquire();
-	// Mesa: while(count == n)
-	while(count == n){
-		notFull.wait(&lock);	// 当缓冲区满时将线程enqueue，注意锁先释放，调度后立刻获取
-	}
-	add c to the buffer;
-	count++;
-	/* Mesa: 
-	if(count == 1){
-		Signal(empty);
+    lock->Acquire();
+    // Mesa: while(count == n)
+    while(count == n){
+        notFull.wait(&lock);    // 当缓冲区满时将线程enqueue，注意锁先释放，调度后立刻获取
+    }
+    add c to the buffer;
+    count++;
+    /* Mesa: 
+    if(count == 1){
+        Signal(empty);
    }*/
-	notEmpty.Signal();
-	lock->release();
+    notEmpty.Signal();
+    lock->release();
 }
 
 BoundedBuffer::Remove(c){
-	lock->Acquire();
-	// Mesa: while(!count)
-	while(count == 0){
-		notEmpty.wait(&lock);	// 当缓冲区空时将线程enqueue
-	}
-	remove c from buffer;
-	count--;
-	/* Mesa: 
-	if(count == 1){
-		Signal(full);
+    lock->Acquire();
+    // Mesa: while(!count)
+    while(count == 0){
+        notEmpty.wait(&lock);    // 当缓冲区空时将线程enqueue
+    }
+    remove c from buffer;
+    count--;
+    /* Mesa: 
+    if(count == 1){
+        Signal(full);
    }*/
-	notFull.Signal();
-	lock->release();
+    notFull.Signal();
+    lock->release();
 }
 ```
 
@@ -663,7 +663,7 @@ signal之后的选择：
 P(countmutex);
 
 if(rcount == 0){
-	P(writemutex);
+    P(writemutex);
 }
 ++rcount;
 
@@ -673,7 +673,7 @@ p(countmutex);
 
 --rcount;
 if(rcount == 0){
-	V(writemutex);
+    V(writemutex);
 }
 
 V(countmutex);

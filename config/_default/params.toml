@@ -1,5 +1,8 @@
 mainSections = ["post", "about"]
 
+[google]
+verificationNumber = "yX3maE6pmP1DkoWbMi0nHg7gSXTKWqs5OPgtrfVy2eA"
+
 [footer]
 since = 2023
 

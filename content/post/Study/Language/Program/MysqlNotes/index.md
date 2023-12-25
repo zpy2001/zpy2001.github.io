@@ -58,9 +58,9 @@ concat
 `<=`|小于等于
 `>=`|大于等于
 `>`|大于
-IS NULL 或者 ISNULL	判断一个值是否为空
-IS NOT NULL	判断一个值是否不为空
-BETWEEN AND	判断一个值是否落在两个值之间
+IS NULL 或者 ISNULL    判断一个值是否为空
+IS NOT NULL    判断一个值是否不为空
+BETWEEN AND    判断一个值是否落在两个值之间
 
 ## 建
 

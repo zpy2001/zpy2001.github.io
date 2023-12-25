@@ -48,10 +48,10 @@ S原先的IA32寄存器扩展到8个64位寄存器，从`%rax`到`%rsp`，另外
 
 错误寻址情况：
 
-- `movl	4(,%esp,2),%eax`	`%esp`不能做index
-- `movl %eax, %bx`			操作数大小不匹配
-- `movl %eax, $4`			立即数不能为目的操作数
-- `movb bytevar, 4(%ebx)`		太多内存操作数
+- `movl    4(,%esp,2),%eax`    `%esp`不能做index
+- `movl %eax, %bx`            操作数大小不匹配
+- `movl %eax, $4`            立即数不能为目的操作数
+- `movb bytevar, 4(%ebx)`        太多内存操作数
 
 
 为了区分开三种类型的操作数才有$\$Imm$,$(E_{a})$，M与R可以看作数组，代表`memory `与`register`，带()往存储器想
@@ -88,8 +88,8 @@ movzbl %dh,%eax     %eax=000000CD
 注意在某些S中，若需要访问`%rsp`，需要将其存入`%rbp`，即后者用来获取栈指针快照：
 
 ```S
-pushq	%rbp
-movq	%rsp,%rbp
+pushq    %rbp
+movq    %rsp,%rbp
 ```
 
 栈的压入操作：将栈指针减8，将值写入新的地址，因此指令`pushq $8,%rsp`等价于：
@@ -136,10 +136,10 @@ long scale(long x, long y, long z)
 
 ```S
 scale:
-	leaq	(%r8,%r8,2), %rax
-	addq	%rdx, %rax
-	leaq	(%rcx,%rax,4), %rax
-	ret
+    leaq    (%r8,%r8,2), %rax
+    addq    %rdx, %rax
+    leaq    (%rcx,%rax,4), %rax
+    ret
 ```
 
 即`(z*3+y)*4+x`
@@ -167,12 +167,12 @@ long arith(long x, long y, long z)
 
 ```S
 arith:
-	leal	(%r8,%r8,2), %eax
-	sall	$4, %eax
-	xorl	%edx, %ecx
-	andl	$252645135, %ecx
-	subl	%ecx, %eax
-	ret
+    leal    (%r8,%r8,2), %eax
+    sall    $4, %eax
+    xorl    %edx, %ecx
+    andl    $252645135, %ecx
+    subl    %ecx, %eax
+    ret
 ```
 
 先是`(z*3)*(2^4)`，而后是`x^y, t1 & 0x0F0F0F0F, t2-t3`。
@@ -209,11 +209,11 @@ void store_uprod(uint128_t *dest, uint64_t x, uint64_t y)
 
 ```S
 store_uprod:
-	movq	%rdx, %rax
-	mulq	%r8
-	movq	%rax, (%rcx)
-	movq	%rdx, 8(%rcx)
-	ret
+    movq    %rdx, %rax
+    mulq    %r8
+    movq    %rax, (%rcx)
+    movq    %rdx, 8(%rcx)
+    ret
 ```
 
 目标为`(%rcx)`地址的储存器，生成的高64位在`%rdx`中到目标`%rcx+8`，低64位在`%rax`中，对应为小端法机器（高位字节存储在大地址）
@@ -236,13 +236,13 @@ void remdiv(long x, long y, long *qp, long *rp)
 
 ```S
 remdiv:
-	movq	%rcx, %rax
-	movq	%rdx, %r10
-	cqto
-	idivq	%r10
-	movq	%rax, (%r8)
-	movq	%rdx, (%r9)
-	ret
+    movq    %rcx, %rax
+    movq    %rdx, %r10
+    cqto
+    idivq    %r10
+    movq    %rax, (%r8)
+    movq    %rdx, (%r9)
+    ret
 ```
 
 - 第一步将`x`移动至`%rax`作为除数，第三步使用`cqto`扩展。
@@ -312,10 +312,10 @@ IA-32中还有2个：AF/PF(parity，奇偶)
 int comp(data_t a,data_t b)
 a in %rdi, b in %rsi
 comp:
-	cmpq	%rsi,%rdi
-	setl	%al
-	movzbl	%al,%eax
-	ret
+    cmpq    %rsi,%rdi
+    setl    %al
+    movzbl    %al,%eax
+    ret
 ```
 
 注意的是`cmpq`执行的是$S_{2}-S_{1}$，`movzbl`会将`%eax`和`%rax`高字节全部清零
@@ -326,21 +326,21 @@ comp:
 
 - `sete`：相等时设置，零标志置位(`set 1`)；
 - `setl`：有符号比较。
-	- 没有溢出时（即`OF`为0），
-		- `a<b`则`SF set 1`，
-		- `a>=b`则`SF reset 0`；
-	- 发生溢出时，
-		- 负溢出时`OF set 1, SF reset 0`，此时有`a<b`；
-		- 正溢出时`OF set 1, SF set 1`，此时有`a>b`；
+    - 没有溢出时（即`OF`为0），
+        - `a<b`则`SF set 1`，
+        - `a>=b`则`SF reset 0`；
+    - 发生溢出时，
+        - 负溢出时`OF set 1, SF reset 0`，此时有`a<b`；
+        - 正溢出时`OF set 1, SF set 1`，此时有`a>b`；
 
 #### 跳转指令
 
 ```S
-	movq	$0,%rax
-	jmp		.L1
-	movq	(%rax),%rdx
+    movq    $0,%rax
+    jmp        .L1
+    movq    (%rax),%rdx
 .L1:
-	popq	%rdx
+    popq    %rdx
 ```
 
 直接跳转为`jmp .标号`作为跳转目的，间接跳转，`jmp *操作数`，例：`jmp *%rax`。
@@ -396,37 +396,37 @@ x_ge_y:
 
 ```S
 absdiff_se:
-	cmpq	%rdx, %rcx
-	jge	.L2
-	addq	$1, lt_cnt(%rip)
-	movq	%rdx, %rax
-	subq	%rcx, %rax
+    cmpq    %rdx, %rcx
+    jge    .L2
+    addq    $1, lt_cnt(%rip)
+    movq    %rdx, %rax
+    subq    %rcx, %rax
 .L1:
-	ret
+    ret
 .L2:
-	addq	$1, ge_cnt(%rip)
-	movq	%rcx, %rax
-	subq	%rdx, %rax
-	jmp	.L1
+    addq    $1, ge_cnt(%rip)
+    movq    %rcx, %rax
+    subq    %rdx, %rax
+    jmp    .L1
 
 gotodiff_se:
-	cmpq	%rdx, %rcx
-	jge	.L7
-	addq	$1, lt_cnt(%rip)
-	movq	%rdx, %rax
-	subq	%rcx, %rax
+    cmpq    %rdx, %rcx
+    jge    .L7
+    addq    $1, lt_cnt(%rip)
+    movq    %rdx, %rax
+    subq    %rcx, %rax
 .L4:
-	ret
+    ret
 .L7:
-	addq	$1, ge_cnt(%rip)
-	movq	%rcx, %rax
-	subq	%rdx, %rax
-	jmp	.L4
+    addq    $1, ge_cnt(%rip)
+    movq    %rcx, %rax
+    subq    %rdx, %rax
+    jmp    .L4
 
 ge_cnt:
-	.space 8
+    .space 8
 lt_cnt:
-	.space 8
+    .space 8
 ```
 
 #### 通过数据的条件传输实现条件分支（更优）
@@ -451,13 +451,13 @@ long long cmovdiff(long long x, long long y)
 
 ```S
 cmovdiff:
-	movq	%rdx, %r8
-	subq	%rcx, %r8
-	movq	%rcx, %rax
-	subq	%rdx, %rax
-	cmpq	%rcx, %rdx
-	cmovg	%r8, %rax
-	ret
+    movq    %rdx, %r8
+    subq    %rcx, %r8
+    movq    %rcx, %rax
+    subq    %rdx, %rax
+    cmpq    %rcx, %rdx
+    cmovg    %r8, %rax
+    ret
 ```
 
 > 为何该种方法更优，回到指令流水线，为保持高性能运转，机器在运算前一条指令的过程中需要取后一条指令，使用跳转的做法机器需要预测后一条指令（处理器非常精密的分支预测逻辑），错误预测将导致程序性能严重下降。
@@ -479,13 +479,13 @@ cmovdiff:
 标准方法：
 
 ```C
-	if(!test-expr){
-		goto false;
-	}
-	v=then-expr;
-	goto done;
+    if(!test-expr){
+        goto false;
+    }
+    v=then-expr;
+    goto done;
 false:
-	v=else-expr;
+    v=else-expr;
 done:
 ```
 
@@ -506,7 +506,7 @@ if(!t) v=ve;
 
 ```C
 do{
-	body-statement
+    body-statement
 }while(test-expr);
 ```
 
@@ -514,11 +514,11 @@ do{
 
 ```C
 loop:
-	body-statement;
-	t=test-expr;
-	if(t){
-		goto loop;
-	}
+    body-statement;
+    t=test-expr;
+    if(t){
+        goto loop;
+    }
 ```
 
 有以下示例：
@@ -554,22 +554,22 @@ loop:
 
 ```S
 fact_do:
-	movl	$1, %eax
+    movl    $1, %eax
 .L2:
-	imulq	%rcx, %rax
-	subq	$1, %rcx
-	cmpq	$1, %rcx
-	jg	.L2
-	ret
+    imulq    %rcx, %rax
+    subq    $1, %rcx
+    cmpq    $1, %rcx
+    jg    .L2
+    ret
 
 fact_do_goto:
-	movl	$1, %eax
+    movl    $1, %eax
 .L5:
-	imulq	%rcx, %rax
-	subq	$1, %rcx
-	cmpq	$1, %rcx
-	jg	.L5
-	ret
+    imulq    %rcx, %rax
+    subq    $1, %rcx
+    cmpq    $1, %rcx
+    jg    .L5
+    ret
 ```
 
 #### while循环
@@ -578,7 +578,7 @@ fact_do_goto:
 
 ```C
 while(test-expr){
-	body-statement;
+    body-statement;
 }
 ```
 
@@ -589,14 +589,14 @@ while(test-expr){
 实现方式是`gcc -O0 -S xx.c`
 
 ```C
-	goto test;
+    goto test;
 loop:
-	body-statement;
+    body-statement;
 test:
-	t=test-expr;
-	if(t){
-		goto loop;
-	}
+    t=test-expr;
+    if(t){
+        goto loop;
+    }
 ```
 
 仍用阶乘作例子：
@@ -632,28 +632,28 @@ test:
 
 ```S
 fact_while:
-	pushq	%rbp
-	.seh_pushreg	%rbp
-	movq	%rsp, %rbp
-	.seh_setframe	%rbp, 0
-	subq	$16, %rsp
-	.seh_stackalloc	16
-	.seh_endprologue
-	movq	%rcx, 16(%rbp)
-	movq	$1, -8(%rbp)
-	jmp	.L9
+    pushq    %rbp
+    .seh_pushreg    %rbp
+    movq    %rsp, %rbp
+    .seh_setframe    %rbp, 0
+    subq    $16, %rsp
+    .seh_stackalloc    16
+    .seh_endprologue
+    movq    %rcx, 16(%rbp)
+    movq    $1, -8(%rbp)
+    jmp    .L9
 .L10:
-	movq	-8(%rbp), %rax
-	imulq	16(%rbp), %rax
-	movq	%rax, -8(%rbp)
-	subq	$1, 16(%rbp)
+    movq    -8(%rbp), %rax
+    imulq    16(%rbp), %rax
+    movq    %rax, -8(%rbp)
+    subq    $1, 16(%rbp)
 .L9:
-	cmpq	$1, 16(%rbp)
-	jg	.L10
-	movq	-8(%rbp), %rax
-	addq	$16, %rsp
-	popq	%rbp
-	ret
+    cmpq    $1, 16(%rbp)
+    jg    .L10
+    movq    -8(%rbp), %rax
+    addq    $16, %rsp
+    popq    %rbp
+    ret
 ```
 
 ##### 第二种翻译
@@ -663,25 +663,25 @@ fact_while:
 转换成`do-while`和`goto`:
 
 ```C
-	t=test-expr;
-	if(!t){
-		goto done;
-	}
-	do{
-		body-statement;
-	}while(test-expr);
+    t=test-expr;
+    if(!t){
+        goto done;
+    }
+    do{
+        body-statement;
+    }while(test-expr);
 done:
 
-	t=test-expr;
-	if(!t){
-		goto done;
-	}
+    t=test-expr;
+    if(!t){
+        goto done;
+    }
 loop:
-	body-statement;
-	t=test-expr;
-	if(t){
-		goto loop;
-	}
+    body-statement;
+    t=test-expr;
+    if(t){
+        goto loop;
+    }
 done:
 ```
 
@@ -689,19 +689,19 @@ done:
 
 ```
 fact_while:
-	cmpq	$1, %rcx
-	jle	.L10
-	movl	$1, %eax
+    cmpq    $1, %rcx
+    jle    .L10
+    movl    $1, %eax
 .L9:
-	imulq	%rcx, %rax
-	subq	$1, %rcx
-	cmpq	$1, %rcx
-	jne	.L9
+    imulq    %rcx, %rax
+    subq    $1, %rcx
+    cmpq    $1, %rcx
+    jne    .L9
 .L7:
-	ret
+    ret
 .L10:
-	movl	$1, %eax
-	jmp	.L7
+    movl    $1, %eax
+    jmp    .L7
 ```
 
 #### for循环
@@ -710,7 +710,7 @@ fact_while:
 
 ```C
 for(init-expr; test-expr; update-expr){
-	body-statement;
+    body-statement;
 }
 ```
 
@@ -719,8 +719,8 @@ for(init-expr; test-expr; update-expr){
 ```C
 init-expr;
 while(test-expr){
-	body-statement;
-	update-expr;
+    body-statement;
+    update-expr;
 }
 ```
 
@@ -729,33 +729,33 @@ while(test-expr){
 跳转中间策略：
 
 ```C
-	init-expr;
-	goto test;
+    init-expr;
+    goto test;
 loop:
-	body-statement;
-	update-expr;
+    body-statement;
+    update-expr;
 test:
-	t=test-expr;
-	if(t){
-		goto loop;
-	}
+    t=test-expr;
+    if(t){
+        goto loop;
+    }
 ```
 
 `guarded-do`策略：
 
 ```C
-	init-expr;
-	t=test-expr;
-	if(!t){
-		goto done;
-	}
+    init-expr;
+    t=test-expr;
+    if(!t){
+        goto done;
+    }
 loop:
-	body-expr;
-	update-expr;
-	t=test-expr;
-	if(t){
-		goto loop;
-	}
+    body-expr;
+    update-expr;
+    t=test-expr;
+    if(t){
+        goto loop;
+    }
 done:
 ```
 
@@ -824,79 +824,79 @@ done:
 
 ```S
 switch_eg:
-	.seh_endprologue
-	subl	$100, %edx
-	cmpl	$6, %edx
-	ja	.L8
-	movl	%edx, %edx
-	leaq	.L4(%rip), %r9
-	movslq	(%r9,%rdx,4), %rax
-	addq	%r9, %rax
-	jmp	*%rax
-	.section .rdata,"dr"
-	.align 4
+    .seh_endprologue
+    subl    $100, %edx
+    cmpl    $6, %edx
+    ja    .L8
+    movl    %edx, %edx
+    leaq    .L4(%rip), %r9
+    movslq    (%r9,%rdx,4), %rax
+    addq    %r9, %rax
+    jmp    *%rax
+    .section .rdata,"dr"
+    .align 4
 .L4:
-	.long	.L7-.L4
-	.long	.L8-.L4
-	.long	.L6-.L4
-	.long	.L5-.L4
-	.long	.L3-.L4
-	.long	.L8-.L4
-	.long	.L3-.L4
-	.text
+    .long    .L7-.L4
+    .long    .L8-.L4
+    .long    .L6-.L4
+    .long    .L5-.L4
+    .long    .L3-.L4
+    .long    .L8-.L4
+    .long    .L3-.L4
+    .text
 .L7:
-	leal	(%rcx,%rcx,2), %eax
-	leal	(%rcx,%rax,4), %ecx
-	jmp	.L2
+    leal    (%rcx,%rcx,2), %eax
+    leal    (%rcx,%rax,4), %ecx
+    jmp    .L2
 .L6:
-	addl	$10, %ecx
+    addl    $10, %ecx
 .L5:
-	addl	$11, %ecx
+    addl    $11, %ecx
 .L2:
-	movl	%ecx, (%r8)
-	ret
+    movl    %ecx, (%r8)
+    ret
 .L3:
-	imull	%ecx, %ecx
-	jmp	.L2
+    imull    %ecx, %ecx
+    jmp    .L2
 .L8:
-	movl	$0, %ecx
-	jmp	.L2
-	.seh_endproc
+    movl    $0, %ecx
+    jmp    .L2
+    .seh_endproc
 
 //严格跳转表的汇编形式
 switch_eg_impl:
-	.seh_endprologue
-	subq	$100, %rdx
-	cmpq	$6, %rdx
-	ja	.L10
-	leaq	jt.1986(%rip), %rax
-	jmp	*(%rax,%rdx,8)
+    .seh_endprologue
+    subq    $100, %rdx
+    cmpq    $6, %rdx
+    ja    .L10
+    leaq    jt.1986(%rip), %rax
+    jmp    *(%rax,%rdx,8)
 .L11:
-	movl	$0, %eax
-	jmp	.L12
+    movl    $0, %eax
+    jmp    .L12
 .L13:
 .L14:
-	movl	$21, %eax
-	jmp	.L12
+    movl    $21, %eax
+    jmp    .L12
 .L15:
-	movl	$0, %eax
-	jmp	.L12
+    movl    $0, %eax
+    jmp    .L12
 .L10:
-	movl	$0, %eax
+    movl    $0, %eax
 .L12:
-	movq	%rax, (%r8)
-	ret
-	.seh_endproc
-	.section .rdata,"dr"
-	.align 32
+    movq    %rax, (%r8)
+    ret
+    .seh_endproc
+    .section .rdata,"dr"
+    .align 32
 jt.1986:
-	.quad	.L11
-	.quad	.L10
-	.quad	.L13
-	.quad	.L14
-	.quad	.L15
-	.quad	.L10
-	.quad	.L15
+    .quad    .L11
+    .quad    .L10
+    .quad    .L13
+    .quad    .L14
+    .quad    .L15
+    .quad    .L10
+    .quad    .L15
 ```
 
 数组的声明叫做`.rodata`（只读数据, read-only）
@@ -992,9 +992,9 @@ T的大小为L bytes
 将`A[i][j]`复制到`%eax`中：
 
 ```S
-leaq	(%rsi,%rsi,2),%rax
-leaq	(%rdi,%rax,4),%rax
-movl	(%rax.%rdx,4),%eax
+leaq    (%rsi,%rsi,2),%rax
+leaq    (%rdi,%rax,4),%rax
+movl    (%rax.%rdx,4),%eax
 ```
 
 C语言变长数组在函数参数传递声明时，长度应位于数组前。
