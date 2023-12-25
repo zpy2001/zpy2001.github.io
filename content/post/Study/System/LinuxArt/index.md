@@ -195,7 +195,7 @@ fork执行过程：
 
 `_sys_fork`是汇编实现的，`int 0x80`软中断使`ss, esp, eflags, cs, eip`寄存器按顺序压入进程0内核栈
 
-参数使用栈传递，`_system_call`中，系统调用ABI参考[Assembly ABI]({{/post/Study/Language/Program/Assembly/CourseNotes/index.md#ABI}})
+参数使用栈传递，`_system_call`中，系统调用ABI参考[Assembly ABI]({{< ref "/post/Study/Language/Program/Assembly/CourseNotes/index.md#abi" >}})
 
 ### `sys_fork`
 

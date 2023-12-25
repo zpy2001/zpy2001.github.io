@@ -34,7 +34,7 @@ std
 
 注意Linux-0.11只支持单核，没有那么多并发和内核锁的需求
 
-请结合[书内容]({{ ref “/post/System/LinuxArt/index.md” }})阅读
+请结合[书内容]({{< ref "/post/Study/System/LinuxArt/index.md" >}})阅读
 
 ### 第二次作业
 
@@ -553,7 +553,7 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
 1. 首先检查是否是4K页对齐
 2. 计算页目录项的内存地址，页目录项index占据虚拟地址[22]位及以上，内存地址按字节寻址，因此右移20位后清空后两位；对齐`size`，`size = ((unsigned) (size+0x3fffff)) >> 22;`是一个4K大小对齐操作
 3. 按照`size`循环复制页表
-    1. 检查`from`/`to`的位置页目录表项是否Present，理应从Present向非Present设置
+    1. 检查`from`/`to`的位置页目录表项是否Present，理应从Present向非Present设置
     2. 从`from`的地址取出页表基址
     3. 为`to`页表申请新页，并且设置对应页目录表项
     4. 注意Linux注释中指出：若`from`为0，则待复制的是内核页表，只需复制160项
@@ -877,12 +877,12 @@ _hd_interrupt:
 Answer: 
 
 1. 安装根文件系统使用`mount_root`函数
-    1. 检查并初始化设备与文件系统数据结构
+    1. 检查并初始化设备与文件系统数据结构
     2. 复制根设备super block(`read_super`)
     3. 读取虚拟盘中根inode放入`inode_table`，并且挂接到`super_block`
     4. 根文件系统与进程1关联
 2. 安装文件系统(`mount`命令，`sys_mount`函数)
-    1. `namei`，通过设备路径获取设备文件`/dev/`下的inode，读文件获取根设备号、读取super block
+    1. `namei`，通过设备路径获取设备文件`/dev/`下的inode，读文件获取根设备号、读取super block
     2. `namei`，获取`mnt`目录下挂接点文件inode
     3. 将super block与根文件系统`mnt`目录挂接
 
@@ -898,35 +898,35 @@ dir_i->i_mount=1;
 ```C
 struct m_inode * iget(int dev,int nr)
 {//...
-	while (inode < NR_INODE+inode_table) {//...
-		if (inode->i_mount) {
-			int i;
+    while (inode < NR_INODE+inode_table) {//...
+        if (inode->i_mount) {
+            int i;
 
-			for (i = 0 ; i<NR_SUPER ; i++)
-				if (super_block[i].s_imount==inode)
-					break;
-			if (i >= NR_SUPER) {
-				printk("Mounted inode hasn't got sb\n");
-				if (empty)
-					iput(empty);
-				return inode;
-			}
-			iput(inode);
-			dev = super_block[i].s_dev;
-			nr = ROOT_INO;
-			inode = inode_table;
-			continue;
-		}//...
-	}//...
+            for (i = 0 ; i<NR_SUPER ; i++)
+                if (super_block[i].s_imount==inode)
+                    break;
+            if (i >= NR_SUPER) {
+                printk("Mounted inode hasn't got sb\n");
+                if (empty)
+                    iput(empty);
+                return inode;
+            }
+            iput(inode);
+            dev = super_block[i].s_dev;
+            nr = ROOT_INO;
+            inode = inode_table;
+            continue;
+        }//...
+    }//...
 }
 ```
 
 3. 打开文件：确定进程操作哪个文件(`sys_open`)
-    1. 将用户进程`task_struct`中`*filep`与内核`file_table`挂接
+    1. 将用户进程`task_struct`中`*filep`与内核`file_table`挂接
     2. 根据用户提供的路径名找到用户需要打开的文件inode(`open_namei`)
     3. inode在`file_table`挂接
 4. 读文件(`sys_read` $\rightarrow$ `file_read`)
-    1. 调用`bmp`确定文件数据块在外设上的逻辑块号
+    1. 调用`bmp`确定文件数据块在外设上的逻辑块号
     2. 根据直接间接数据块找到需要读取的数据在外设的位置
     3. `bread`将数据块读入缓冲块
     4. 数据复制到进程地址空间
