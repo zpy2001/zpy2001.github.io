@@ -293,8 +293,33 @@ __asm__ ("movl %%esp,%%eax\n\t" \
 
 通过伪造中断上下文使用`iret`的方式硬件改变特权级，经过阅读x86 Manual，`iret`pop stack的顺序是`eip, cs , eflags`，因此在执行完`iret`后执行`1`标签后的代码，`cs`为`0x0f`，即`RPL`为3，则`iret`之后以3特权级执行代码，切换到用户态。
 
-{{% hint degree="warning" title="问题" %}}
-4、根据什么判定`fork`之后的代码为进程0的代码。
+{{% hint degree="info" title="上题理解错误时以为的问题" %}}
+4、根据什么判定move_to_user_mode()中iret之后的代码为进程0的代码。
+{{% /hint %}}
+
+Answer: 根据`move_to_user_mode`代码：
+
+```C
+#define move_to_user_mode() \
+__asm__ ("movl %%esp,%%eax\n\t" \
+	"pushl $0x17\n\t" \
+	"pushl %%eax\n\t" \
+	"pushfl\n\t" \
+	"pushl $0x0f\n\t" \
+	"pushl $1f\n\t" \
+	"iret\n" \
+	"1:\tmovl $0x17,%%eax\n\t" \
+	"movw %%ax,%%ds\n\t" \
+	"movw %%ax,%%es\n\t" \
+	"movw %%ax,%%fs\n\t" \
+	"movw %%ax,%%gs" \
+	:::"ax")
+```
+
+`pushl $1f`最终将`iret`后`eip`的值设置完成，将跳转继续执行，但是这段代码的段属性已经发生了改变，`cs`段`pushl $0x0f`已经变为3特权，`ss`段`pushl $0x17`也同样为`3`特权，并且他们指向的都是LDT，而且在`sched_init`中已经通过`lldt(0)`指令将LDTR指向了进程0的LDT，因此可以说此后执行的都是进程0的代码，栈也位于进程0的用户栈。
+
+{{% hint degree="info" title="上题理解错误时以为的问题" %}}
+4、根据什么判定`fork`之后的代码为进程0/1的代码。
 {{% /hint %}}
 
 Answer: 根据x86 ABI，使用`%eax`存储返回值，进程0 TSS中的设置为`p->tss.eax = 0;`，而父进程直接返回`return last_pid;`，`_sys_fork`会先调用`_find_empty_process`，将`last_pid`增加，因此父进程返回值一定为正，会与进程0区分开。
