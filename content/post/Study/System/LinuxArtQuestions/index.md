@@ -293,7 +293,7 @@ __asm__ ("movl %%esp,%%eax\n\t" \
 
 通过伪造中断上下文使用`iret`的方式硬件改变特权级，经过阅读x86 Manual，`iret`pop stack的顺序是`eip, cs , eflags`，因此在执行完`iret`后执行`1`标签后的代码，`cs`为`0x0f`，即`RPL`为3，则`iret`之后以3特权级执行代码，切换到用户态。
 
-{{% hint degree="info" title="上题理解错误时以为的问题" %}}
+{{% hint degree="warning" title="问题" %}}
 4、根据什么判定move_to_user_mode()中iret之后的代码为进程0的代码。
 {{% /hint %}}
 
