@@ -61,7 +61,7 @@ weight: 1
 
 - 需要在值生产者与消费者之间建立通信
 - 寄存器重命名：给每个值一个tag
-- 给指令提供缓冲区：保留站
+- 给指令提供缓冲区：**每个部件一个保留站**
 - 持续监测值是否可用：准备好则广播tag，消费者匹配tag
 - 指令所需全部值准备好则发射
 
@@ -131,21 +131,77 @@ $$CPUTime = InstructionCount \times CPI \times Cycle Time$$
 
 ## Memory
 
+参考[youtube视频](https://www.youtube.com/watch?v=7J7X7aZvMXQ)，**非常推荐观看**，动画讲解当前技术，通透
+
 Memory Array: Address N位，可存储M位Data
 
-- Channel(处理器一侧一个Channel)
-    - DIMM(一个卡槽一个DIMM)
+DRAM读写17ns，刷新每行50ns/全部3ms，64ms电容全部漏电，SSD读写50ms
+
+DDR每个时钟周期发送2批64位事务，每秒处理48亿次请求，每秒刷新16次
+
+现代主板上通常支持双通道Channel内存，对应A1, A2, B1, B2四个插槽，Ai为一个通道，Bi为一个通道，为了利用两个通道需要同时各插入一个内存条
+
+DDR顶端芯片是电源管理芯片
+
+通道在主板上的区分并不明显，很可能只是延伸出去的两种线
+
+DDR5结构和数据：
+
+- 每个Channel也被区分为Channel A/B，分别为上下两半，独立使用32条线传输32位数据，中间有21条线传输地址，32条线之间有7条线传输控制信号 
+    - 每个Chip读写8位数据，每个Chip有2GB DRAM Die
+        - Die纵向划分为8个Bank Groups
+            - 每个Bank Group 4个Banks，Die上一共32个Banks，bank group可以刷新一次一行但是其他三行可以继续用
+                - 每个Bank有$65536\times 8192$个cells，bank之间独立可并行
+
+寻址：31位地址，21位[RAS]行地址选通，10位[CAS]列地址选通，3位Bank Group，2位Bank，16位Row，10位Col
+
+读写时bit line会预充电半高电压(不同代DDR最高电压不同，DDR5最高电压1.1V)，而后经过读写放大器识别电压的微小改变而放大电压变化
+
+- Channel(处理器一侧一个Channel)，如果为消费级主板，则为12/34两个channel，12插槽为1个channel
+    - DIMM(一个卡槽slot一个DIMM)(Dual Inline Memory Module)
         - Rank(一面一个Rank)，64位
             - Chip(一面8个Chip)，8位
                 - Bank(一个Chip8个Bank)
                     - Row/Colomn
 
+读过程：
+
+1. Row Close
+2. Precharge Bitlines
+3. Row Open
+4. Column Address
+5. Access 1T1C Cells
+
+加速：
+
+1. 命中同一行时可以省略上面1~3步
+2. 每个Bank使用Burst Buffer，将128位数据存成$16\times 8$的阵列，使用列选通10位中的6位选中128位的数据作为prefetch，预取到Burst Buffer中，而后用4位来索引特定列的数据
+3. 字线和位线和晶体管相比太长，Memory Array下再插入一层subarray($1024\times 1024$ Cells)，每个subarray下面有读写放大器。好处：
+    - 电容可以变小
+    - 行选通时间变短
+4. Folded Layout：$字线数量\times 2$，将一侧的晶体管一半移到另一侧，隔行移动，读写放大器中有反相器和precharge晶体管，precharge阶段反相器关闭，precharge将两个字线充电至半电压
 
 ### Cache
 
+核心机制：用`index`索引`set`，用`tag`在`set`内遍历寻找`cache line`，用`offset`取到实际的数据
+
+#### 计算
+
+结构计算：$sets$ - 纵向组，$ways$横向组内的路数
+
+$$Data\ Array\ Size(Cache\ Size) = sets \times ways \times blocksize$$
+
+$$Tag\ Array\ Size = sets \times ways \times tagsize$$
+
+$$index\ bits = \log_{2}(sets)$$
+
+$$offset\ bits = \log_{2}(blocksize)$$
+
+$$address\ width = tag\ bits + index\ bits + offset\ bits$$
+
 延迟计算：设第$i$层Cache固有访问时间$t_{i}$，感知访问时间$T_{i}$，命中率$h_{i}$，缺失率$m_{i}$
 
-则$T_{i} = t_{i} + m_{i}\times T_{i+1}$
+则$T_{i} = t_{i} + m_{i}\times T_{i+1} + \cdots + m_{N - 1}\times T_{N}$
 
 Cache写，写回/写直达/写失效：要写的数据不在cache中，
 
@@ -154,7 +210,7 @@ Cache写，写回/写直达/写失效：要写的数据不在cache中，
 
 #### Cache性能
 
-相联度越大，miss rate越小，hit latency和area cost越高
+相联度越大，Way/Set越大，预取数据越多，因此miss rate越小，hit latency和area cost越高
 
 cache miss类型：
 
@@ -220,20 +276,20 @@ Cache状态：
 
 Cache States:
 
-| 条目           | 状态机                           | 状态转移要点                                                            |
-| -------------- | -------------------------------- | ----------------------------------------------------------------------- |
-| 由于处理器访问 | ![csp](photos/msi_dir_csp.png)   | 所有写请求都转移至M态，发独占请求，I的读到S，发共享请求，其余读状态不变 |
-| 由于目录请求   | ![csdi](photos/msi_dir_csdi.png) | 降级请求M$\rightarrow$S，所有Invalid请求都到I，请求响应相对应           |
-| 由于数据置换   | ![csda](photos/msi_dir_csda.png) | 写回请求都转到I                                                         |
-| 总             | ![cst](photos/msi_dir_cst.png)   |                                                                         |
+| 条目                                                                                      | 状态机                           |
+| ----------------------------------------------------------------------------------------- | -------------------------------- |
+| 由于处理器访问<br>所有写请求都转移至M态，发独占请求，I的读到S，发共享请求，其余读状态不变 | ![csp](photos/msi_dir_csp.png)   |
+| 由于目录请求<br>降级请求M$\rightarrow$S，所有Invalid请求都到I，请求响应相对应             | ![csdi](photos/msi_dir_csdi.png) |
+| 由于数据置换<br>写回请求都转到I                                                           | ![csda](photos/msi_dir_csda.png) |
+| 总                                                                                        | ![cst](photos/msi_dir_cst.png)   |
 
 Directory States:
 
-| 条目         | 状态机                         | 状态转移要点                                                     |
-| ------------ | ------------------------------ | ---------------------------------------------------------------- |
-| 由于数据请求 | ![dsd](photos/msi_dir_dsd.png) | 所有共享请求ShReq都转到Sh，所有独占请求ExReq都转到Ex，无跳转到Un |
-| 由于写回     | ![dsw](photos/msi_dir_dsw.png) | 写回请求除了当共享者多于1个都转到Un，否则留在Sh                  |
-| 总           | ![dst](photos/msi_dir_dst.png) |                                                                  |
+| 条目                                                                             | 状态机                         |
+| -------------------------------------------------------------------------------- | ------------------------------ |
+| 由于数据请求<br>所有共享请求ShReq都转到Sh，所有独占请求ExReq都转到Ex，无跳转到Un | ![dsd](photos/msi_dir_dsd.png) |
+| 由于写回<br>写回请求除了当共享者多于1个都转到Un，否则留在Sh                      | ![dsw](photos/msi_dir_dsw.png) |
+| 总                                                                               | ![dst](photos/msi_dir_dst.png) |
 
 
 **MESI**
@@ -243,6 +299,8 @@ Directory States:
 状态转移图：
 
 ![state](photos/mesi_sn_state.png)
+
+**只有当PrRd通过BusRd发现没有其他人持有或者PrWr(肯定会使其他备份失效)的时候才进入Exclusive State**
 
 #### 杂项
 
@@ -264,7 +322,7 @@ Translation Look-aside Buffer (TLB)
 
 同一个虚址可能对应不同的物理地址，不同的虚址可能映射到同一个物理地址
 
-必须让缓存使用TLB翻译后的物理页框作为index索引set，使用一部分page offset作为tag（虚实一致）
+必须让缓存使用一部分**page offset作为index**，使用TLB翻译后的**物理页框作为tag**来索引（虚实一致）
 
 Virtually-indexed Physically-tagged缓存大小限制为$页面大小\times 关联度$
 
@@ -310,7 +368,7 @@ $CPI<1$，多发射处理器
     - 线程冲突导致Cache/TLB冲突
     - OS调度开销
 
-线程调度策略
+线程调度策略：
 
 - 固定交叉模式
     - N个线程，每个线程隔N个周期执行一条指令，若未就绪则插入bubble
@@ -347,27 +405,39 @@ SMT参考[知乎文章](https://www.zhihu.com/tardis/zm/art/352676442?source_id=
 
 区别：前者每个处理部件都需要有完整的功能、所有功能并行，而后者每个处理部件对应特定功能、不同功能之间并行，Array能够完全并行，Vector仅能够流水处理相同指令
 
-lane：包含向量寄存器堆的一部分和来自每个向量功能单元的一个执行流水线
+lane：包含向量寄存器堆的一部分和来自每个向量功能单元的一个执行流水线，即一个部件
 
 ### GPU
 
 SIMT - single instruction, multiple thread
 
+费米架构：
+
+![Fermi](photos/fermi_arch.png)
+
+硬件上看：
+
+- Streaming Multiprocessor(SM)
+    - Streaming Processor(SP)
+
+![warps](photos/warps.png)
+
+执行级别概念：
+
 - large data-parallel operation
-    - thread blocks(1 per SIMT core)
-        - warps(1 warp 1 SIMT core)
-            - in-order pipelines(SIMD lane)
+    - thread blocks(1 per SM)
+        - warps：包含固定数量线程的最小执行单位，所有线程执行SIMT模式，即所有线程执行同样的指令，操作不同的数据；thread blocks分配给SM后，会被划分为多个warps，在SM上并行执行(可同时执行不同的Function Units)，每个block中warp数量为$WarpsPerBlock=\lceil\frac{ThreadsPerBlock}{WarpSize}\rceil$；一个Warp中的线程必然在同一个Block中，若threads凑不满一个Warp，将浪费SM资源
 
 SIMT是SIMD的一种实现方式，两种编程上有不同：
-
+ 
 - SIMD每条指令指明不同的数据输入
 - SIMT线程自动在warp中执行
 
-SPMD编程模型：处理器执行同样程序但可以对不同数据进行操作
+SPMD编程模型：处理器执行同样程序但可以对不同数据进行操作。软件层面看：
 
-- Grid：许多线程块组成Grid
-    - Block：许多线程组成Block
-        - Tread
+- Grid(对应device)：许多线程块组成Grid，一个kernel并行任务会形成一个Grid
+    - Block(对应SM)：许多线程组成Block
+        - Tread(对应CUDA Core，即SP)
 
 GPU核数量对程序员透明
 
