@@ -141,6 +141,10 @@ ROB为循环队列，表项：
 
 $$CPUTime = InstructionCount \times CPI \times Cycle Time$$
 
+### 分支预测
+
+from before的指令插入延迟槽是说原先的指令延迟执行，因此不会浪费任何timing
+
 ### 超标量
 
 双发射、超标量处理器的执行示例：
@@ -265,8 +269,9 @@ cache miss类型：
 **Directory Protocol目录协议**
 
 - 为每一存储行维持一个目录项，记录所有当前持有此存储行备份的处理器ID以及此行是否已经被改写等信息
-- 某处理器改写某行时，根据目录内容只向持有此行备份的处理器发送信号，避免广播
 - 适用于分布式共享存储系统
+- 因为是分布式共享存储，因此目录的存储仍然是在每个节点上，通过网络互联来保证数据的一致性（必然仍然有广播的过程）
+- 条目可表示成bit位图，前N个bits代表拥有该条目的处理器Cache，最后一个bits代表是否处于独占
 
 MSI/MESI这种协议只是对于Cache状态的描述，并不涉及底层实现，不能说MSI就是监听/目录协议，而是两者都可，取决于硬件要求
 
@@ -425,7 +430,7 @@ SMT参考[知乎文章](https://www.zhihu.com/tardis/zm/art/352676442?source_id=
 
 区别：前者每个处理部件都需要有完整的功能、所有功能并行，而后者每个处理部件对应特定功能、不同功能之间并行，Array能够完全并行，Vector仅能够流水处理相同指令
 
-lane：包含向量寄存器堆的一部分和来自每个向量功能单元的一个执行流水线，即一个部件
+lane：包含向量寄存器堆的一部分和来自每个向量功能单元的一个执行流水线，即一个部件，数量决定warp内的并行度
 
 ### GPU
 
@@ -440,13 +445,13 @@ SIMT - single instruction, multiple thread
 - Streaming Multiprocessor(SM)
     - Streaming Processor(SP)
 
-![warps](photos/warps.png)
-
 执行级别概念：
 
 - large data-parallel operation
     - thread blocks(1 per SM)
         - warps：包含固定数量线程的最小执行单位，所有线程执行SIMT模式，即所有线程执行同样的指令，操作不同的数据；thread blocks分配给SM后，会被划分为多个warps，在SM上并行执行(可同时执行不同的Function Units)，每个block中warp数量为$WarpsPerBlock=\lceil\frac{ThreadsPerBlock}{WarpSize}\rceil$；一个Warp中的线程必然在同一个Block中，若threads凑不满一个Warp，将浪费SM资源
+
+![warps](photos/warps.png)
 
 SIMT是SIMD的一种实现方式，两种编程上有不同：
  
