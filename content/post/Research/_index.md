@@ -1,8 +1,8 @@
 ---
 menu:
     main:
-        name: Study
-        weight: 6
+        name: Research
+        weight: 5
         params:
             icon: study
 ---

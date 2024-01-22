@@ -10,7 +10,7 @@ since = 2023
 compact = false
 doctor = "蓝色空间 #4686"
 level = 112
-subtitle = "<b>CSer in ICT</b> <br /> <b>Research Direction</b>: OS, Cloud, Virtualization<br /><b>Hobbies</b>: Game, Music, Movies, Tech, Photograph, Travel"
+subtitle = "<b>CSer in ICT</b> <br /> <b>Research Direction</b>: OS, Cloud, Virtualization, MLsys<br /><b>Hobbies</b>: Game, Music, Movies, Tech, Photograph, Travel"
 
   [sidebar.avatar]
   enabled = true
