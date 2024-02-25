@@ -8,7 +8,7 @@ categories:
 tags:
   - blog
   - log
-weight: 1
+weight: 20
 ---
 ### 博客部署
 本博客部署主要依赖[Hugo](https://hugo.zcopy.site)框架，并使用了[ETOgaosion (Blue Space)](https://github.com/ETOgaosion)的明日方舟主题，在此记录部署更新方式：
