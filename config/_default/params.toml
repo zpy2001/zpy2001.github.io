@@ -4,13 +4,13 @@ mainSections = ["post", "about"]
 verificationNumber = "yX3maE6pmP1DkoWbMi0nHg7gSXTKWqs5OPgtrfVy2eA"
 
 [footer]
-since = 2023
+since = 2024
 
 [sidebar]
 compact = false
-doctor = "蓝色空间 #4686"
-level = 112
-subtitle = "<b>CSer in ICT</b> <br /> <b>Research Direction</b>: OS, Cloud, Virtualization, MLsys<br /><b>Hobbies</b>: Game, Music, Movies, Tech, Photograph, Travel"
+doctor = "ZPY #4136"
+level = 120
+subtitle = "<b>CSer in ICT</b> <br /> <b>Research Direction</b>: Quantum computing, Parallel Computing, NIQS algorithm<br /><b>Hobbies</b>: Game, History, Tech, Travel"
 
   [sidebar.avatar]
   enabled = true
