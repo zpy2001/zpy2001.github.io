@@ -1,6 +1,6 @@
 ---
 title: 论文笔记 - aceso：通过迭代缓解瓶颈实现高效的并行DNN训练
-description: Article Note: Aceso: Efficient Parallel DNN Training through Iterative Bottleneck Alleviation
+description: Article Note - Aceso Efficient Parallel DNN Training through Iterative Bottleneck Alleviation
 slug: research-mlsys-Aceso
 date: 2024-01-21 17:04:00+0000
 categories:

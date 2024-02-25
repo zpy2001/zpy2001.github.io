@@ -1,4 +1,4 @@
-baseURL = 'https://etogaosion.github.io/'
+baseURL = 'https://zpy2001.github.io/'
 languageCode = 'zh-cn'
-title = 'BlueSpace Blog'
+title = 'ZPY Blog'
 theme = 'arknights'

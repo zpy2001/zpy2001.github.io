@@ -1,6 +1,6 @@
 ---
 title: 论文笔记 - SEER：从GPU内核视角的CNN时间预测模型
-description: Article Note: SEER: A Time Prediction Model for CNNs from GPU Kernel’s View
+description: Article Note - SEER - A Time Prediction Model for CNNs from GPU Kernel’s View
 slug: research-mlsys-SEER
 date: 2024-01-18 16:04:00+0000
 categories:
