@@ -1,7 +1,7 @@
 ---
 title: 日本語（课下）
-description: 日语学习
-slug: Japanese-Learning
+description: 日语学习/复习
+slug: Japanese-Learning-more
 date: 2024-02-26
 categories:
   - language
