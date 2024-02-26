@@ -27,16 +27,16 @@ tags:
 	- 光敏炸弹：光学窗口吸收到光子则爆炸
 	- 问题：有没有办法在这些炸弹中辨识出一些可爆弹，而不引起所有可爆弹发生爆炸？
 	- 可叠加原理-单光子干涉仪-25%的未失效炸弹
-- 延迟选择实验（惠勒，1981演讲）![[img/延迟选择实验.png|450]]
+- 延迟选择实验（惠勒，1981演讲）![](photos/延迟选择实验.png|450)
 - 信息-Rolf Landauer
 - Stern-Gerlach实验-自旋
 - 布拉赫球
-	![[img/布洛赫球.png|200]]
+	![](photos/布洛赫球.png)
 	- 1 qubit可以存储无限经典比特信息（无法提取，但还是有意义的）
 - S. J. Wiesner's quantum bank card & quantum money
 - QKD：BB84协议
 - 保密通信系统的物理模型
-	![[img/信息加密模型.png]]
+	![](photos/信息加密模型.png)
 - 量子号-京沪干线
 - 主动防御问题
 	- 量子计算机的物理局限性-对量子计算机内部结构和工作原理深入研究
@@ -44,5 +44,5 @@ tags:
 - Entanglement
 	- 纯态（pure states）-受限纠缠态（bound entangled，distillable）-不纠缠（unentangled）
 	- teleportation
-		![[img/quantum teleportation.png]]
+		![](photos/teleportation.png)
 - 量子图灵机-David Deutsch
