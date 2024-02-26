@@ -1,0 +1,18 @@
+mainSections = ["post", "about"]
+
+[google]
+verificationNumber = "yX3maE6pmP1DkoWbMi0nHg7gSXTKWqs5OPgtrfVy2eA"
+
+[footer]
+since = 2024
+
+[sidebar]
+compact = false
+doctor = "ZPY #4136"
+level = 120
+subtitle = "<b>CSer in ICT</b> <br /> <b>Research Direction</b>: Quantum computing, Parallel Computing, NIQS algorithm<br /><b>Hobbies</b>: Game, History, Tech, Travel"
+
+  [sidebar.avatar]
+  enabled = true
+  local = true
+  src = "img/avatar.jpeg"

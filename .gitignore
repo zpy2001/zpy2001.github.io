@@ -1,0 +1,15 @@
+.DS_Store
+**/.DS_Store
+.hugo_build.lock
+resources
+resources/**
+assets
+assets/**
+public
+public/**
+**.obsidian
+**.obsidian/**
+**.idea
+**.idea/**
+.idea
+Writerside
