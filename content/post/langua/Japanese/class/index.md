@@ -1,5 +1,5 @@
 ---
-title: 日本語
+title: 日本語（课上）
 description: 日语学习
 slug: Japanese-Learning
 date: 2024-02-26
@@ -8,6 +8,7 @@ categories:
 tags:
   - language
   - Japanese
+  - class
 weight: 2
 ---
 # 日语课程
