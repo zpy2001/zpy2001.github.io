@@ -497,3 +497,72 @@ felix-felic-;potens-potent-;sapiens-sapient-
 | magni idoneus | magni necessarius |
 | maxime idoneus | maxime necessarius |
 
+### 形容词比较级的变格
+
+| Fortior   |             | Fortius  | Brevior   |             | Brevius  |
+| --------- | ----------- | -------- | --------- | ----------- | -------- |
+| fortior   |             | fortius  | brevior   |             | brevius  |
+|           | fortioris   |          |           | brevioris   |          |
+|           | fortiori    |          |           | breviori    |          |
+| fortiorem |             | fortius  | breviorem |             | brevius  |
+|           | fortiore    |          |           | breveore    |          |
+| fortiores |             | fortiora | breviores |             | breviora |
+|           | fortiorum   |          |           | breviorum   |          |
+|           | fortioribus |          |           | brevioribus |          |
+| fortiores |             | fortiora | breviores |             | breviora |
+|           | fortioribus |          |           | brevioribus |          |
+- 最高级和分析型比较级按I-II格变化，即magna magnus magnum
+
+### 带-rim的最高级
+- 原级以er结尾的形容词，其比较级变化是规则的，但构成最高级时，无论属于哪类变格，都要在-er后加-rim(-us -a -um)
+
+| 原级    |        |         | 比较级      |          | 最高级               |
+| ----- | ------ | ------- | -------- | -------- | ----------------- |
+| acer  | acris  | acre    | acrior   | acrius   | acerrimus -a -um  |
+| celer | celere |         | celerior | celerius | celerrimus -a -um |
+| liber | libera | liberum | liberior | liberius | liberrimus -a -um |
+### 带-lim的最高级
+- 在第III变格法中有**6**个-lis结尾的形容词，其比较级是规则的，但构成最高级时要把lis改成lim
+
+
+| 原级             | 比较级               | 最高级(-lim-)               |
+| -------------- | ----------------- | ------------------------ |
+| difficilis, -e | difficilior, -ius | difficili-limus, -a, -um |
+| dissimilis, -e | dissimilior, -ius | dissimil-limus, -a, -um  |
+| facilis, -e    | facilior, -ius    | facil-limus, -a, -um     |
+| gracilis, -e   | gracilior, -ius   | gracil-limus, -a, -um    |
+| humilis, -e    | humilior, -ius    | humil-limus, -a, -um     |
+| similis, -e    | similior, -ius    | simil-limus, -a, -um     |
+-  除此之外，所有的-lis结尾的形容词变化都是规则的：utilis utilissimus
+	- utilis sit rogno(Be useful to the kingdom)
+### 不规则的比较级
+- 几个常用形容词的比较级和最高级均不规则
+
+| 原级               | 比较级              | 最高级                                            |
+| ---------------- | ---------------- | ---------------------------------------------- |
+| bonus, -a, -um   | melior, melius   | optimus, -a, -um                               |
+| juvenis, -e      | junior(juvenior) | (natu minimus)                                 |
+| magnus, -a, -um  | major, majus     | maximus, -a, -um                               |
+| malus, -a, -um   | pejor, pejus     | pessimus, -a, -um                              |
+| multus, -a, -um  | plus, pluris     | plurimus, -a, -um                              |
+| multi, -ae, -a   | plures, plura    | plurimus, ae, -a                               |
+| parvus, -a, -um  | minor, minus     | minimus, -a, -um                               |
+| senex, -is       | senior, -ius     | (natu minimus)                                 |
+| superus, -a, -um | superior, -ius   | summus, -a, -um(最高的)<br>supremus, -a, -um(最后的) |
+- 有些比较级和最高级并非由形容词原级构成，而是源于副词或介词
+
+| 介词/副词            | 比较级            | 最高级           |
+| ---------------- | -------------- | ------------- |
+| extra 在外面        | exterior, -ius | extremus      |
+| intra 在里面        | interior, -ius | intimus       |
+| potis, pote 有能力的 | potior, -ius   | potissimus    |
+| prae, pro 在前面    | prior, prius   | primus        |
+| prope 靠近         | propior, -ius  | proximus      |
+| supra 在上面        | superior, -ius | supremus      |
+| ultra 在上面        | ulterior, -ius | ultimus(最远最早) |
+### 比较连词quam
+Pater est altior quam ego
+Latina est difficilior quam ceterae linguae
+Aqua levior est quam ferrum(水比铁轻)
+- 比较意义也可以不用quam结构，而用离格表示: Aqua levior est ferro
+- 古典拉丁语中quam结构更常用，离格作为一种替代更常用于诗体
