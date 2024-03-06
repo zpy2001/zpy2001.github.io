@@ -9,6 +9,7 @@ tags:
   - quantum
   - class
 ---
+## Class I
 ### Outline
 #### Course overview
 - Background
@@ -83,4 +84,16 @@ $x^2+1$-量子操作（例如对光子的自旋进行操作）
 - 不能被表达为两个态的直积
 #### Three important theorems
 - Schmidt decompostion
-- 
+
+## Class II
+### 1-qubit operation and the relationships
+- Hadmard gate
+- Pauli-X
+- Pauli-Y
+- Pauli-Z
+- Phase
+- $\frac{\pi}{8}$
+#### Rotation
+- Operation function:$f(A) = \sum_i f(\lambda_i)|\psi_i \rangle$,where $A = \sum_i \lambda_i |\psi_i\rangle$
+	- $A^2 = I, e^{i\alpha A}=\cos \alpha I + i \sin \alpha A$
+	- 

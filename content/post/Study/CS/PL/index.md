@@ -13,3 +13,11 @@ weight: 1
 ---
 # 并行处理
 
+## Lecture 02: Parallelism and Locality
+**并行的局部性**
+- 峰值性能$$P_{chip}=n_{core} . n^{FP}_{super}.n_{FMA}.n_{simd}.f$$
+### Part I: Parallel Execution
+#### Exploit Parallelism
+- ILP SISD
+- SIMD
+- MIMD SPMD

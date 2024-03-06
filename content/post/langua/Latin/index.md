@@ -566,3 +566,28 @@ Latina est difficilior quam ceterae linguae
 Aqua levior est quam ferrum(水比铁轻)
 - 比较意义也可以不用quam结构，而用离格表示: Aqua levior est ferro
 - 古典拉丁语中quam结构更常用，离格作为一种替代更常用于诗体
+- quam后的参照物应当和被比较的事物同格
+	- Nullum virum fortiorem vidi quam Caesarem(vidi \[video\] ，看见，要求宾格)
+	- Nulli viro fortiori occurri quam Caesari(occurri \[occurro]，遇见，要求与格)
+- 最高级后常用属格表示比较的范围
+	- optimus omnium （众人中）最好的
+- 若句中没有参照物，则比较级和最高级只是强调程度
+
+### 一些例句
+- Citius altius fortius
+- Prior tempore, prior jure
+## 数词
+### 数词的表示法
+
+|     | 罗马数字 | 基数词<br>numerālia cardinālia | 序数词<br>numerālia orrdinālia             |
+| --- | ---- | --------------------------- | --------------------------------------- |
+| 1   | I    | unus -a -um                 | prīmus -a -um                           |
+| 2   | II   | duo duae duo                | secundus -a -um<br>altěr altěra altěrum |
+| 3   | III  | tres tria                   | tertius -a -um                          |
+| 4   | IV   | quattuor                    | quārtus -a -um                          |
+| 5   | V    | quinque                     | quītus -a -um                           |
+| 6   | VI   | sex                         | sextus -a -um                           |
+| 7   | VII  | septem                      | septǐmus -a -um                         |
+| 8   | VIII | octō                        | octāvus -a -um                          |
+| 9   | IX   | novem                       | nōnus -a -um                            |
+| 10  | X    | devem                       | devǐmus -a -um                          |
