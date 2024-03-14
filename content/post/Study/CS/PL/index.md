@@ -21,3 +21,7 @@ weight: 1
 - ILP SISD
 - SIMD
 - MIMD SPMD
+
+## Lecture 03
+### How to achieve the peal
+https://github.com/PAA-NCIC/PE.git

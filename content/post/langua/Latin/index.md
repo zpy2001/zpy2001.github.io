@@ -579,15 +579,105 @@ Aqua levior est quam ferrum(水比铁轻)
 ## 数词
 ### 数词的表示法
 
-|     | 罗马数字 | 基数词<br>numerālia cardinālia | 序数词<br>numerālia orrdinālia             |
-| --- | ---- | --------------------------- | --------------------------------------- |
-| 1   | I    | unus -a -um                 | prīmus -a -um                           |
-| 2   | II   | duo duae duo                | secundus -a -um<br>altěr altěra altěrum |
-| 3   | III  | tres tria                   | tertius -a -um                          |
-| 4   | IV   | quattuor                    | quārtus -a -um                          |
-| 5   | V    | quinque                     | quītus -a -um                           |
-| 6   | VI   | sex                         | sextus -a -um                           |
-| 7   | VII  | septem                      | septǐmus -a -um                         |
-| 8   | VIII | octō                        | octāvus -a -um                          |
-| 9   | IX   | novem                       | nōnus -a -um                            |
-| 10  | X    | devem                       | devǐmus -a -um                          |
+|     | 罗马数字  | 基数词<br>numerālia cardinālia | 序数词<br>numerālia orrdinālia             |
+| --- | ----- | --------------------------- | --------------------------------------- |
+| 1   | I     | unus -a -um                 | prīmus -a -um                           |
+| 2   | II    | duo duae duo                | secundus -a -um<br>altěr altěra altěrum |
+| 3   | III   | tres tria                   | tertius -a -um                          |
+| 4   | IV    | quattuor                    | quārtus -a -um                          |
+| 5   | V     | quinque                     | quītus -a -um                           |
+| 6   | VI    | sex                         | sextus -a -um                           |
+| 7   | VII   | septem                      | septǐmus -a -um                         |
+| 8   | VIII  | octō                        | octāvus -a -um                          |
+| 9   | IX    | novem                       | nōnus -a -um                            |
+| 10  | X     | devem                       | devǐmus -a -um                          |
+| 11  | XI    | ūndĕcim                     | ūndĕcimus                               |
+| 12  | XII   | duodĕcim                    | duodĕcimus                              |
+| 13  | XIII  | trēdĕcim                    | tertius dĕcimus                         |
+| 14  | XIV   | quattuordĕcim               | quārtus dĕcimus                         |
+| 15  | XV    | quīndĕcim                   | quīntus dĕcimmus                        |
+| 18  | XVIII | duodēvīgǐntī                | duodēvīcēmus                            |
+| 20  | XX    | vīgǐntī                     | vīcēmus                                 |
+
+### 罗马历法
+Jānuārius
+Fěbruārius
+Martius
+Aprīlis
+Mājus
+Jūnius
+Jūlius(Quinctīlis)
+Augustus(Sextīlis)
+September
+Octōber
+November
+December
+- 这些词本是形容词，如september -bris -bre 七个的，第七的，但后来由于月份mēnsis常被省略，所以成为阳性名词；以-us结尾的，变格同bonus，以-er结尾的，变格同acer
+- 从September到December本来是7-10月，但由于之前加了两个月，原来的1-2月变成了3-4月，于是7-10月变成9-12月
+- 5月起初是Quinctīlis，但由于Caesar原名Jūlius Caesar，因而改名；6月起初是Sextīlis，但屋大维被授予Augustus“神圣、伟大”的尊号，将其生日6月改为Augustus，后变为7-8月
+- 其余各月都是用神或节日命名，如Jānuārius由Jānus派生，其为双面神，取瞻前顾后之意；Fěbruārius取Februa赎罪节（动词Fěbruāre，赎罪）；Martius由战神Mars派生，罗马人常在三月出征；Mājus派生自Māja，是司掌春天的女神；Jūnius派生自Jūno；
+- 罗马人把每个月第一天称为Kalendae/Calendae（动calare，召唤，召来），即祭司根据月相宣布新月开始之日，即初一；
+Lūnae Diēs: moon day
+Mārtis Diēs: mar's day
+Mercuriī Diēs: 水星日
+Jovis Diēs: 木星日
+Veněris Diēs: 金星日
+Sāturnī Diēs: 土星日
+Sōlis Diēs: 太阳日
+## 代词
+### 代词概述
+拉丁语代词(prōnomen)主要分为以下数类
+- 人称代词 pronōnia personālia
+- 反身代词 pronōmen reflexīvium
+- 物主代词 pronōmǐna possessīva
+- 指示代词 pronomǐna demonstratīva
+- 肯定代词 pronomǐna determinatīva
+- 疑问代词 pronōmǐna relatīva
+- 关系代词
+- 不定代词
+- 否定代词
+**变格和名词形容词有很多区别**
+### 人称代词
+
+|     | 第一人称 |                | 第二人称 |                |
+| --- | ---- | -------------- | ---- | -------------- |
+|     | 单数   | 复数             | 单数   | 复数             |
+|     | 我    | 我们             | 你    | 你们             |
+| 主   | egō  | nos            | tū   | vōs            |
+| 属   | meī  | nostrī/nostrum | tuī  | vestrī/vestrum |
+| 与   | mihi | nōbīs          | tibi | vōbīs          |
+| 宾   | mē   | nōs            | tē   | vōs            |
+| 离   | mē   | nōbīs          | tē   | vōbīs          |
+- 我 你都是宾格离格同形；我们 你们都是与格离格同形
+- 我们 你们的属格都有两种形式，其中-um类型为部分属格，用在有数量含意的名词后，表示部分所属的整体
+	- pauci vestrum 你们中的少数人
+	- multi nostrum 我们中的多数人
+- 表示领属意义时用-tri
+	- patria nostri 我们的祖国
+- 当人称代词的离格跟介词cum连用时，要置于介词之前，而且连写；mecum tecum nobiscum vobiscum（和我/你/我们/你们一起）
+- 拉丁语中，人称代词做主语有强调意味，例如表示对比
+	- Ego urbem odi，tu amas（我讨厌城市，你喜欢）
+	- Tu romae eras，ego domi eram（你那时在罗马，我在家）
+	但这种句子并不多见，动词词尾明指人称时，主语就不用了
+	- Odi et amo(Catullus) 我恨，我又爱
+	- Tibi credo
+	- Cogito ergo sum
+- 拉丁语没有专用的第三人称代词，若需要则用指示代词is表示他，ea表示她，id表示它
+### 反身代词
+反身代词“自己”表示主语的行为及于自身，所以没有主格，第一二人称反身代词和人称代词形式相同，只有第三人称略有特点
+
+| 第三人称 |
+| ---- |
+| 单/复数 |
+|      |
+| suī  |
+| sibi |
+| sē   |
+| sē   |
+- 第一二人称的反身意义需要根据上下文判断，看它的人称和数是否和主语一致
+	Cicero laudavit te
+- 第三人称反身代词不分单复数，靠上下文判断
+- 比较用法
+	Puella servavit se (A save Aself)
+	Puella servavit eam (A save B)
+- 反身代词离格和介词cum连用时，常把介词置于代词后连写；secum（随身携带）

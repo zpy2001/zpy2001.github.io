@@ -96,4 +96,42 @@ $x^2+1$-量子操作（例如对光子的自旋进行操作）
 #### Rotation
 - Operation function:$f(A) = \sum_i f(\lambda_i)|\psi_i \rangle$,where $A = \sum_i \lambda_i |\psi_i\rangle$
 	- $A^2 = I, e^{i\alpha A}=\cos \alpha I + i \sin \alpha A$
-	- 
+- Rotation operations about 𝑥, 𝑦, 𝑧
+在量子计算中，旋转操作是通过特定的量子门来实现的，这些门可以绕着布洛赫球的x、y、z轴旋转量子态。这些旋转操作的矩阵表示如下：
+
+##### 绕x轴的旋转$(R_x(\theta))$
+
+$$ R_x(\theta) = \begin{pmatrix} \cos(\frac{\theta}{2}) & -i\sin(\frac{\theta}{2}) \\ -i\sin(\frac{\theta}{2}) & \cos(\frac{\theta}{2}) \end{pmatrix} $$
+
+##### 绕y轴的旋转$(R_y(\theta))$
+
+$$ R_y(\theta) = \begin{pmatrix} \cos(\frac{\theta}{2}) & -\sin(\frac{\theta}{2}) \\ \sin(\frac{\theta}{2}) & \cos(\frac{\theta}{2}) \end{pmatrix} $$
+
+##### 绕z轴的旋转$(R_z(\theta))$
+
+$$ R_z(\theta) = \begin{pmatrix} e^{-i\frac{\theta}{2}} & 0 \\ 0 & e^{i\frac{\theta}{2}} \end{pmatrix} = \begin{pmatrix} \cos(\frac{\theta}{2}) - i\sin(\frac{\theta}{2}) & 0 \\ 0 & \cos(\frac{\theta}{2}) + i\sin(\frac{\theta}{2}) \end{pmatrix} $$
+
+### Controlled operations
+#### CNOT & SWAP
+- $|c\rangle |t\rangle\to |c\rangle|t\oplus c\rangle$
+- $|a\rangle|b\rangle \to |b\rangle|a\rangle$
+- 3 CNOT = SWAP
+![](img/CNOT&SWAP.png)
+#### Controlled-𝑈
+$|c\rangle |t\rangle \to |c\rangle U^c |t\rangle$
+
+## Class 3
+### Deutsch Algorithm
+**UF映射**
+![](img/DEU.png)
+$|x,y\rangle \to |x, y\oplus f(x)\rangle$
+- 初始化状态: $|\psi_0 \rangle = |01\rangle$
+- H门
+- $U_f |x\rangle \frac{(|0\rangle-|1\rangle)}{\sqrt 2}$
+- 
+*辅助比特-局部相位-改变原有比特的相位从而蕴含信息*
+### Deutsch-Jozsa Algorithm
+- 问题推广-$\{0,1\}^n$
+![](img/DJA.png)
+
+
