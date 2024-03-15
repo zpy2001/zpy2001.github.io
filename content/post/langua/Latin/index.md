@@ -681,3 +681,26 @@ Sōlis Diēs: 太阳日
 	Puella servavit se (A save Aself)
 	Puella servavit eam (A save B)
 - 反身代词离格和介词cum连用时，常把介词置于代词后连写；secum（随身携带）
+### 物主代词
+物主代词为人称代词和反身代词的间接格词干派生而来
+
+| 词干     | 阳       | 阴      | 中       |
+| ------ | ------- | ------ | ------- |
+| me-    | meus    | mea    | meum    |
+| tu-    | tuus    | tua    | tuum    |
+| nostr- | nostrus | nostra | nostrum |
+| vestr- | vestrus | vestra | vestrum |
+| su-    | suus    | sua    | suum    |
+这些物主代词都是**三尾形容词**，变化同magnus或pulcher
+
+| 单    |      |      | 复      |        |        |
+| ---- | ---- | ---- | ------ | ------ | ------ |
+| 阳    | 阴    | 中    | 阳      | 阴      | 中      |
+| meus | mea  | meum | meī    | meae   | mea    |
+| meī  | meae | meī  | meōrum | meārum | meōrum |
+| meō  | meae | meō  | meīs   | meīs   | meīs   |
+| meum | meam | 同主   | meōs   | meās   | 同主     |
+| meō  | meā  | meō  | meīs   | meīs   | meīs   |
+| mī   | 同主   | 同主   | 同主     | 同主     | 同主     |
+Legō meum librum
+Legis tuum librum
