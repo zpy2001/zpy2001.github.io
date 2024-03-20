@@ -704,3 +704,20 @@ Sōlis Diēs: 太阳日
 | mī   | 同主   | 同主   | 同主     | 同主     | 同主     |
 Legō meum librum
 Legis tuum librum
+
+当主语是第三人称时，需要区分物主代词和指示代词(eius eorum earum \[is]，他们)
+	Caesar amicum eius servavit(其他人的朋友)
+	Caesar amicum suum servavit（凯撒自己的朋友）
+
+### 指示代词概述
+常用指示代词
+
+| 阳    | 阴    | 中     |           |
+| ---- | ---- | ----- | --------- |
+| hǐc  | haec | hǒc   | 离说话人近的，这  |
+| istě | istǎ | istud | 离听话人近的，那  |
+| ǐs   | ěa   | ǐd    | 前文提及的，该   |
+| illě | illǎ | illud | 离听说人都远的，那 |
+hic liber(this book)
+iste liber(that book)
+is liber(该书)
