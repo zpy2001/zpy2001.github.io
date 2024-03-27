@@ -10,7 +10,7 @@ tags:
   - language
 weight: 2
 ---
-# 语音
+ # 语音
 ### 元音
 - 上-为长，上三角为短
 - 长短规则
@@ -721,3 +721,66 @@ Legis tuum librum
 hic liber(this book)
 iste liber(that book)
 is liber(该书)
+#### 指示代词hic
+
+|     | 单数   |       |     | 复数    |       |       |
+| --- | ---- | ----- | --- | ----- | ----- | ----- |
+|     | 阳    | 阴     | 中   | 阳     | 阴     | 中     |
+| Nom | hǐc  | haec  | hoc | hī    | hae   | haec  |
+| Gen |      | huius |     | hōrum | hārum | hōrum |
+| Dat |      | huic  |     |       | hīs   |       |
+| Acc | hǔnc | hǎnc  | hoc | hōs   | hās   | haec  |
+| Abl | hōc  | hāc   | hōc |       | hīs   |       |
+- hi-c, ho-c, hae-c...的-c源于后附词-ce，它不是词尾的组成部分
+- 单宾的n是m被后舌音c同化的结果
+- huic中的ui是二合元音huius读作\[hui-jus]
+#### 指示代词ille
+|     | 单数    |        |       | 复数      |         |         |
+| --- | ----- | ------ | ----- | ------- | ------- | ------- |
+|     | 阳     | 阴      | 中     | 阳       | 阴       | 中       |
+| Nom | ille  | illa   | illud | illī    | illae   | illa    |
+| Gen |       | illīus |       | illōrum | illārum | illōrum |
+| Dat |       | illī   |       |         | illīs   |         |
+| Acc | illum | illam  | illud | illōs   | illās   | illa    |
+| Abl | illō  | illā   | illō  |         | illīs   |         |
+#### 指示代词is
+|     | 单数  |      |     | 复数     |       |       |
+| --- | --- | ---- | --- | ------ | ----- | ----- |
+|     | 阳   | 阴    | 中   | 阳      | 阴     | 中     |
+| Nom | ǐs  | eǎ   | ǐd  | eī(iī) | eae   | eǎ    |
+| Gen |     | eius |     | eōrum  | eārum | eōrum |
+| Dat |     | eī   |     |        | eīs   |       |
+| Acc | eum | eam  | ǐd  | eōs    | eās   | ea    |
+| Abl | eō  | eā   | eō  |        | eīs   |       |
+- eius读作\[ei-jus]，英语中常用的缩写词i.e.=id est
+#### 指示代词iste
+|     | 单数    |        |       | 复数      |         |         |
+| --- | ----- | ------ | ----- | ------- | ------- | ------- |
+|     | 阳     | 阴      | 中     | 阳       | 阴       | 中       |
+| Nom | iste  | ista   | istud | istī    | istae   | ista    |
+| Gen |       | istīus |       | istōrum | istārum | istōrum |
+| Dat |       | istī   |       |         | istīs   |         |
+| Acc | istum | istam  | istud | istōs   | istās   | ista    |
+| Abl | istō  | istā   | istō  |         | istīs   |         |
+### 指示代词的用法
+1. 指示代词用作形容词时，其性、数、格要同它所限定的名词的保持一致
+	Hic liber melior quam ille liber est
+	Haec puella ambulābat
+	Eam puellam vīdīmus
+	Eum librum lēgī
+	Hunc librum optās(optō, optāre, optāvī, hope, wish)
+	Illum librum optō
+	**Iste有时可含有贬义**
+	Iste homo venīre non potest(那个人可能来不了)
+	Omnēs istud bellum conficere volēbant(conficiō, -ěre, -fēcī, end, over)
+2. 指示代词作名词使用时，通常阳/阴性指人，中性指物，具体含义需要根据上下文判断:hic(这个男人), haec(这个女人), ille(那个男人), illa(那个女人), haec(这个物体), illa(那个物体)。中性形式作名词时主要用作主格和宾格。
+	Puella intrāvit, ea mihi littrās dedit(The girl has come in, she has given me letters)
+	Eum vidēs
+	Cum eō ambulat
+	Vidēsne id?
+	*指示代词的属格形式可以表示领属意义*
+	Eius librum habeo(I have her book)
+	Patrem eārum vidēmus(We see their father)
+	*ille在古典拉丁语时期还可指人们熟知的人或物*
+	Magnus ille Alexander
+	Ille poeta romanus, Publius Vergilius Marō, carmen longum...

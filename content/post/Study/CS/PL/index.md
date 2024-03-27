@@ -31,7 +31,7 @@ weight: 1
 - 当并行计算机上执行并行程序时，应如何描述系统性能特征
 - 应如何量化和分析系统可扩展性
 （锐评图形学，每个文章都挺好，跑花花公子的图片很漂亮，但没有benchmark，不知道做到什么程度了）
-## 系统和应用的基准程序
+### 系统和应用的基准程序
 #### 基准程序的定义
 - 基准程序组(benchmark suite)是一套基准程序和控制测试条件及过程的一组特定规则，包括输入数据、输出结果以及性能指标
 #### 基准程序的分类
@@ -66,3 +66,22 @@ weight: 1
 - 扩展Amdahl定律
 ### How to achieve the peal
 https://github.com/PAA-NCIC/PE.git
+
+
+## Lecture 04
+#### Introduction: why data access is so important
+#### Introduction: conceptual goals of the study
+#### Introduction: pragmatic goals of the study
+ - **Latency**: how many cycles it takes to get data from main memory and caches
+ - **Bandwidth**: how much data CPU can bring from main memory and caches
+ - what does “memory bandwidth" we see in a processor spec sheet really mean? e.g.,
+	 - The processor data sheet of E5-2698(68GB/s)
+	 - In general:8 bytes * DDR frequency * memory channel, per CPU socket
+	 - The “big” CPU (Skylake-X Gold 6130)
+### **Memory bound algorithms**
+### What does memory performance imply for FLOPS?
+### Memory-bound algorithms (applications)
+- There are two obvious lower bounds on the time to complete the algorithm
+	$T \geq \frac{C}{the\ peak\ FLOAPS}$
+	$T \geq \frac{N}{the\ peak\ mem\ band}$
+
