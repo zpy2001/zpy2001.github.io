@@ -85,3 +85,10 @@ https://github.com/PAA-NCIC/PE.git
 	$T \geq \frac{C}{the\ peak\ FLOAPS}$
 	$T \geq \frac{N}{the\ peak\ mem\ band}$
 
+
+### 期末考试
+- 考试占30分
+- 开卷
+- 考试范围为基础知识
+	- L05、06、07（计算峰值）；强弱扩、峰值、（雅可比之类的）优化结果解释
+	- 

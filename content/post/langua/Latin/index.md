@@ -784,3 +784,110 @@ is liber(该书)
 	*ille在古典拉丁语时期还可指人们熟知的人或物*
 	Magnus ille Alexander
 	Ille poeta romanus, Publius Vergilius Marō, carmen longum...
+### 肯定代词
+肯定代词有两个：Īdem, eǎdem,ǐdem “同一的”；ipsě, ipsǎ, ipsum “亲自，本人”
+
+#### 肯定代词Īdem
+
+| 单数     |         |       | 复数          |               |          |
+| ------ | ------- | ----- | ----------- | ------------- | -------- |
+| 阳      | 阴       | 中     | 阳           | 阴             | 中        |
+| īdem   | eǎdem   | ǐdem  | eīdem(īdem) | eaedem        | eadem    |
+|        | ēiusdem |       | eōrundem    | eārundem      | eōrundem |
+|        | eīdem   |       |             | eīsdem(īsdem) |          |
+| eundem | eandem  | 同主    | eōsdem      | eāsdem        | 同主       |
+| eōdem  | eādem   | eōdem |             | eīsdem(īsdem) |          |
+- 这个代词由指示代词is, ea, id...+dem构成
+- 唇印m在齿音d被同化为n，eum-dem-eundem
+- 缩略语id.=idem，“同上”(the same)
+#### 肯定代词Ipsě
+| 单数    |        |       | 复数      |         |         |
+| ----- | ------ | ----- | ------- | ------- | ------- |
+| 阳     | 阴      | 中     | 阳       | 阴       | 中       |
+| ipsě  | ipsǎ   | ipsum | ipsī    | ipsae   | ipsa    |
+|       | ipsīus |       | ipsōrum | ipsārum | ipsōrum |
+|       | ipsī   |       |         | ipsīs   |         |
+| ipsum | ipsam  | 同主    | ipsōs   | ipsās   | 同主      |
+| ipsō  | ipsā   | ipsō  |         | ipsīs   |         |
+- 变格和指示代词ille相同
+- 肯定代词的作用是强调名词或代词所强调事物的同一性
+	Nosce te ipsum(Know thyself, nosco, noscere, novi, notum, 获知，nosce是第二人称命令式，据说为柏拉图所说的希腊语的拉丁语译文)
+	Eōsdem mitto(我派去的就是那些人)
+	Ipsa haec dīxit(这是她亲口说的)
+	Casǎrem ipsum vīdīmus(我们看见凯撒本人了)
+### 疑问代词
+疑问代词quī quae quod “什么样的，哪个（些）”，用作形容词。变格如下：
+
+|      | 单数    |      |        | 复数     |        |
+| ---- | ----- | ---- | ------ | ------ | ------ |
+| 阳    | 阴     | 中    | 阳      | 阴      | 中      |
+| quī  | quae  | quod | quī    | quae   | quae   |
+|      | cuius |      | quōrum | quārum | quōrum |
+|      | cui   |      |        | quǐbus |        |
+| quem | quam  | 同主   | quōs   | quās   | 同主     |
+| quō  | quā   | quō  |        | quǐbus |        |
+用作名词时只有阳性"quǐs，谁"和中性"quǐd，什么"两个形式，阳性形式兼表阴性，其变格形式只有单数的主格略有特点：
+
+| 单数    |      | 复数     |      |
+| ----- | ---- | ------ | ---- |
+| 阳、阴   | 中    | 阳、阴    | 中    |
+| quǐs  | quǐd | quī    | quae |
+| cuisu |      | quōrum |      |
+| cuī   |      | quǐbus |      |
+| quem  | 同主   | quōs   | 同主   |
+| quō   |      | quǐbus |      |
+关于疑问代词uter，utra，utrum见前
+Quis librum tibi dedit(谁给你了这本书)
+Quī sunt amīcī tuī(哪些人是你的朋友)
+Quae fēmǐna illum librum legit(哪个女人读那本书)
+Quem librum legis（你在读什么书）
+
+Quod praemium legit(adj. )
+Quid legit(n.)
+### 关系代词
+关系代词形式和疑问代词相同
+
+关系代词和疑问代词的区别在于其引导一个关系从句（定语从句），用于修饰或限制主句中的先行词，其性、数要和先行词一致，格根据其在从句中的功能决定：
+Hic est discipǔlus quī Latīnam amat(这是一个喜欢拉丁语的学生，qui在从句中作主语)
+Vir sapit quī pauca loquǐtur(智者不轻言)
+Amō puellam quae ex Italiǎ vēnit(我喜欢哪个从意大利来的女孩)
+Fēmǐna quam laudās est bella(The girl whom you are praising is beautiful)
+Fēmǐnas quae in viā clāmant ōdimus(I hate the women who shout in the street)
+Praemium quod dedit erat magnum(The money which he gave was large)
+### 不定代词
+“不定”就是不确定，说话者不清楚怎么说或不想明说，比如说“有一个，某一个”，也可能是强调“任何一个，哪一个都行”；
+**拉丁语的不定代词由前/后缀+疑问代词构成**，表示不定意义的词缀有alǐ-, -quam, -que, -vis, -dam
+带*quī, quae, quod*的不定代词可以用作形容词或名词，带*quis, quid*的不定代词只能做名词
+
+| 代名词                            |                | 代形容词                           |        |
+| ------------------------------ | -------------- | ------------------------------ | ------ |
+| quǐs, quid                     | 某人，某物          | quī, quae, quod                | 某个     |
+| aliquǐs, aliquid               | 某人/            | aliquī, aliquae, aliquod       | 某个     |
+| quīdam, quaedam, quoddam       | 某人/物（确指）       | quīdam, quaedam, quoddam       | 某个（确指） |
+| quǐsque, quaeque, quidque      | 每个人/物          | quǐsque, quaeque, quodque      | 每个     |
+| quīvīs, quaevīs, quidvīs       | 随便什么人/物        | quīvīs, quaevīs, quodvīs       | 随便哪一个  |
+| quīlǐbet, quaelǐbet, quidlǐbet | 随便什么人/物        | quīlǐbet, quaelǐbet, quodlǐbet | 随便哪一个  |
+| quǐsquam, quaequam, quidquam   | 任何人/物（主要用于否定句） |                                |        |
+| quǐsquǐs, quidquid, quaequae   | 无论谁/什么         |                                |        |
+#### aliquī变格
+
+| 单数                |          |                          | 复数        |           |           |
+| ----------------- | -------- | ------------------------ | --------- | --------- | --------- |
+| 阳                 | 阴        | 中                        | 阳         | 阴         | 中         |
+| aliquī<br>aliquǐs | aliquae  | aliquod(形)<br>aliquid（名） | aliquī    | aliquae   | aliqua    |
+|                   | alicuius |                          | aliquōrum | aliquārum | aliquōrum |
+|                   | alicui   |                          |           | aliquǐbus |           |
+| aliquem           | aliquam  | 同主                       | aliquǒs   | aliquǎs   | 同主        |
+| aliquō            | aliquā   | aliquō                   |           | aliquǐbus |           |
+#### quīdam变格
+
+| 单数      |          |                          | 复数        |           |           |
+| ------- | -------- | ------------------------ | --------- | --------- | --------- |
+| 阳       | 阴        | 中                        | 阳         | 阴         | 中         |
+| quīdam  | quaedam  | quoddam(形)<br>quiddam(名) | quīdam    | quaedam   | quaedam   |
+|         | cuiusdam |                          | quōrumdam | quārumdam | quōrumdam |
+|         | cuidam   |                          |           | quǐbusdam |           |
+| quemdam | quamdam  | 同主                       | quǒsdam   | quǎsdam   | 同主        |
+| quōdam  | quādam   | quōdam                   |           | quǐbusdam |           |
+- 变格时只变代词部分，前后缀不变
+- 唇音m在dam前变为n
